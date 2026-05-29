@@ -21,10 +21,11 @@ The object adding system reads from .txt files in the src/resources/objects fold
 [x] [y] [z] # specify relative coordinates of second vertex using floats
 ... # repeat for all vertices of surface
 ```
-Leave a blank line between each block of surface values to separate surfaces. Some example files are already provided in the objects file.
+Leave a blank line between each block of surface values to separate surfaces. Some example files are already provided in the objects folder.
 
 ### Controls
 
+Movement:
 - W: move forward 0.35 units
 - S: move backward 0.35 units
 - A: move left 0.35 units
@@ -34,16 +35,18 @@ Leave a blank line between each block of surface values to separate surfaces. So
 - L: move left 5 units
 - R: move right 5 units
 
+Rotation:
 - Q: turn left 1/64th of a full rotation
 - E: turn right 1/64th of a full rotation
 - T: tilt up 1/64th of a full rotation
 - G: tilt down 1/64th of a full rotation
 
+Misc:
 - N: begin the prompt to add an object from the objects folder to the environment
 
 ## Plans for this project
 
-I originally started this project at the beginning of college in the spring of 2025 when first learning the Java language. There are many misuses of the Swing library and design choices that make the program much more disorganized and harder to develop than it needs to be. 
+I originally started this project at the beginning of college in the spring of 2025 when first learning the Java language. There are many misuses of Swing and design choices that make the program much more disorganized and harder to develop than it needs to be. 
 
 I want to clean up this project to make it easier to understand and develop, and rewrite it to use Swing properly and more efficiently.
 
