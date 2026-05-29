@@ -25,21 +25,21 @@ Leave a blank line between each block of surface values to separate surfaces. So
 
 ### Controls
 
--W: move forward 0.35 units
--S: move backward 0.35 units
--A: move left 0.35 units
--D: move right 0.35 units
--Space: move up 0.35 units
--Z: move down 0.35 units
--L: move left 5 units
--R: move right 5 units
+- W: move forward 0.35 units
+- S: move backward 0.35 units
+- A: move left 0.35 units
+- D: move right 0.35 units
+- Space: move up 0.35 units
+- Z: move down 0.35 units
+- L: move left 5 units
+- R: move right 5 units
 
--Q: turn left 1/64th of a full rotation
--E: turn right 1/64th of a full rotation
--T: tilt up 1/64th of a full rotation
--G: tilt down 1/64th of a full rotation
+- Q: turn left 1/64th of a full rotation
+- E: turn right 1/64th of a full rotation
+- T: tilt up 1/64th of a full rotation
+- G: tilt down 1/64th of a full rotation
 
--N: begin the prompt to add an object from the objects folder to the environment
+- N: begin the prompt to add an object from the objects folder to the environment
 
 ## Plans for this project
 
@@ -48,8 +48,8 @@ I originally started this project at the beginning of college in the spring of 2
 I want to clean up this project to make it easier to understand and develop, and rewrite it to use Swing properly and more efficiently.
 
 I also want to attempt to add the following features:
--The ability for multiple cameras to view a single space from different positions
--The ability to manipulate objects in an environment during runtime
--Provide more customization for object files
--Add additional UI to the camera such as coordinate information
--Create smoother camera movement
+- The ability for multiple cameras to view a single space from different positions
+- The ability to manipulate objects in an environment during runtime
+- Provide more customization for object files
+- Add additional UI to the camera such as coordinate information
+- Create smoother camera movement
