@@ -10,26 +10,27 @@ public class PerspectiveMath {
 
     public static Surface rotateSurfaceXY(Surface surface, double radians, double x, double y) {
         //TODO: add content
-        return new Surface(null, null, null);
+        return null;
     }
 
     public static Surface rotateSurfaceYZ(Surface surface, double radians, double y, double z) {
         //TODO: add content
-        return new Surface(null, null, null);
+        return null;
     }
 
     public static Surface rotateSurfaceXZ(Surface surface, double radians, double x, double z) {
         //TODO: add content
-        return new Surface(null, null, null);
+        return null;
     }
 
     public static Surface sliceSurface(Surface surface, double y) {
         //TODO: add content
-        return new Surface(null, null, null);
+        return null;
     }
 
-    public static Point calcPointPerspective(Point3D point, Point3D cameraPoint, Dimension viewDimension) {
-        //TODO: add content
-        return new Point();
+    public static Point calcPointPerspective(Point3D point, Point3D cameraPoint, Dimension viewDimension, double fov) {
+        int x = (viewDimension.width / 2) + (int)(fov * (point.x - cameraPoint.x)/(point.y - cameraPoint.y));
+        int y = (viewDimension.height / 2) - (int)(fov * (point.z - cameraPoint.z)/(point.y - cameraPoint.y));
+        return new Point(x, y);
     }
 }

@@ -2,11 +2,22 @@
  * custom class that holds the 3D coordinates of each individual surface in space
  */
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class Surface {
+
+	public static final Color DEFAULT_COLOR = new Color(0, 0, 0, 0);
 
 	private double[] x; //stores x coordinates of vertices
 	private double[] y; //stores y coordinates of vertices
 	private double[] z; //stores z coordinates of vertices
+
+	private Color color;
+
+	private ArrayList<Point3D> points;
 	
 	//constructor that passes positions of vertices in space
 	public Surface(double[] x, double[] y, double[] z) {
@@ -20,7 +31,37 @@ public class Surface {
 			this.z[i] = z[i];
 		}
 	}
+
+	public Surface() {
+		this(DEFAULT_COLOR);
+	}
+
+	public Surface(Color c) {
+		points = new ArrayList<Point3D>();
+		color = c;
+	}
+
+	public Surface(List<Point3D> points) {
+		this (points, DEFAULT_COLOR);
+	}
+
+	public Surface(List<Point3D> points, Color c) {
+		this.points = new ArrayList<Point3D>(points);
+		color = c;
+	}
 	
+	public List<Point3D> getPoints() {
+		return Collections.unmodifiableList(points);
+	}
+
+	public void addPoint(Point3D point) {
+		points.add(point);
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
 	//getter method that returns coordinates of one of the surface's vertices
 	public double[] getPointCoords(int pointNum) {
 		double[] coords = {x[pointNum], y[pointNum], z[pointNum]};

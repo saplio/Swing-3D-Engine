@@ -41,6 +41,7 @@ public class Main {
 				if (Math.abs(j) % 2 == 1) {
 					for (int i = 2; i < 9; i += 2) {
 						for (int k = 0; k < ShapeX.length; ++k) {
+
 							coords[0][k] = j * 2 + ShapeX[k] - 0.25;
 							coords[1][k] = i + ShapeY[k];
 							coords[2][k] = l + ShapeZ[k];

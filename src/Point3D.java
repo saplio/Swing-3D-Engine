@@ -4,9 +4,9 @@
 
 public class Point3D {
 
-    private double x;
-    private double y;
-    private double z;
+    public double x;
+    public double y;
+    public double z;
 
     public Point3D() {
         this(0, 0, 0);
@@ -44,7 +44,7 @@ public class Point3D {
 
         Point3D other = (Point3D)obj;
 
-        if ((other.x == x) &&(other.y == y) && (other.z == z)) {
+        if ((other.x == x) && (other.y == y) && (other.z == z)) {
             return true;
         }
 
