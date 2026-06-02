@@ -78,6 +78,8 @@ public class Camera extends JComponent {
 
     public void setFOV(double fov) {
         this.fov = fov;
+
+        refresh();
     }
 
     public void moveTo(double x, double y, double z) {
@@ -85,7 +87,7 @@ public class Camera extends JComponent {
         this.y = y;
         this.z = z;
 
-        recalculatePerspective();
+        refresh();
     }
 
     public void moveOrthogonal(double x, double y, double z) {
@@ -93,7 +95,7 @@ public class Camera extends JComponent {
         this.y += y;
         this.z += z;
 
-         recalculatePerspective();
+         refresh();
     }
 
     public void moveCameraRelative(double amtRight, double amtForward, double amtUp) {
@@ -101,28 +103,28 @@ public class Camera extends JComponent {
 		y += amtForward * Math.cos(yaw) + amtRight * Math.cos(yaw +  Math.PI / 2);
 		z += amtUp;
 
-         recalculatePerspective();
+         refresh();
         //TODO: this type of movement currently doesn't account for pitch and roll
     }
 
     //TODO: make sure the fields wrap between 0 and 2 * PI in the future
-    public void setCameraAngle(double yaw, double pitch, double roll) {
+    public void setRotation(double yaw, double pitch, double roll) {
         this.yaw = yaw;
         this.pitch = pitch;
         this.roll = roll;
 
-         recalculatePerspective();
+         refresh();
     }
 
-    public void turnCameraAngle(double yaw, double pitch, double roll) {
+    public void rotate(double yaw, double pitch, double roll) {
         this.yaw += yaw;
         this.pitch += pitch;
         this.roll += roll;
 
-         recalculatePerspective();
+         refresh();
     }
 
-    public void recalculatePerspective() {
+    public void refresh() {
         shapes = new ArrayList<ScreenPolygon>();
 
         for (Surface surface : space.getSurfaces()) {
@@ -133,9 +135,14 @@ public class Camera extends JComponent {
     }
 
     private ScreenPolygon calcSurfacePerspective(Surface surface) {
-        ScreenPolygon shape = new ScreenPolygon(surface.getColor());
+        Surface rotatedSurface;
+        rotatedSurface = PerspectiveMath.getRotatedSurfaceXY(surface, yaw, x, y);
+        rotatedSurface = PerspectiveMath.getRotatedSurfaceYZ(rotatedSurface, pitch, y, z);
+        rotatedSurface = PerspectiveMath.getRotatedSurfaceXZ(rotatedSurface, roll, x, z);
 
-        for (Point3D point3D : surface.getPoints()) {
+        ScreenPolygon shape = new ScreenPolygon(rotatedSurface.getColor());
+
+        for (Point3D point3D : rotatedSurface.getPoints()) {
             Point screenPoint = PerspectiveMath.calcPointPerspective(point3D, getCameraPoint3D(), getSize(), fov);
             shape.addPoint(screenPoint.x, screenPoint.y);
         }
@@ -148,13 +155,15 @@ public class Camera extends JComponent {
         super.paintComponent(g);
 
         Graphics2D g2D = (Graphics2D)(g.create());
+
         for (ScreenPolygon shape : new ArrayList<ScreenPolygon>(shapes)) {
             g2D.setColor(shape.color);
             g2D.fill(shape);
+
             g2D.setColor(Color.BLACK);
             g2D.draw(shape);
         }
-
+        
         g2D.dispose();
     }
 

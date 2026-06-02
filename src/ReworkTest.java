@@ -1,6 +1,5 @@
 import java.awt.Color;
 import java.awt.Point;
-import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
@@ -10,29 +9,30 @@ public class ReworkTest {
         Space space = new Space();
 
         //add surfaces to space
-        ArrayList<Point3D> surface = new ArrayList<Point3D>();
-        surface.add(new Point3D(0, 6, 0));
-        surface.add(new Point3D(1, 6, 0));
-        surface.add(new Point3D(0.5, 6, 1));
-        space.addSurface(new Surface(surface, Color.RED));
+        Surface surface;
+        surface = new Surface(Color.RED);
+        surface.addPoint(new Point3D(0, 6, 0));
+        surface.addPoint(new Point3D(1, 6, 0));
+        surface.addPoint(new Point3D(0.5, 6, 1));
+        space.addSurface(surface);
 
-        surface = new ArrayList<Point3D>();
-        surface.add(new Point3D(0.2, 4, 0));
-        surface.add(new Point3D(1.2, 4, 0));
-        surface.add(new Point3D(0.7, 4, 1));
-        surface.add(new Point3D(0.2, 4, 1.7));
-        space.addSurface(new Surface(surface, new Color(0, 100, 0, 150)));
+        surface = new Surface(new Color(0, 100, 0 ,150));
+        surface.addPoint(new Point3D(0.2, 4, 0));
+        surface.addPoint(new Point3D(1.2, 4, 0));
+        surface.addPoint(new Point3D(0.7, 4, 1));
+        surface.addPoint(new Point3D(0.2, 4, 1.7));
+        space.addSurface(surface);
 
         //make two different cameras in the same space
         createDisplay(space, new Point(100, 200));
-        createDisplay(space, new Point( 500, 200));
+        createDisplay(space, new Point( 700, 200));
     }
 
     public static void createDisplay(Space space, Point pos) {
         //create container
         JFrame frame = new JFrame();
         frame.setTitle("3D space");
-		frame.setSize(400, 300);
+		frame.setSize(600, 400);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocation(pos);
 
@@ -44,7 +44,7 @@ public class ReworkTest {
         //TODO: make it so camera can be added before making frame visible
         frame.add(camera);
         frame.revalidate();
-        camera.recalculatePerspective();
+        camera.refresh();
 
         //add keyboard control
         frame.addKeyListener(new Keyboard(camera));

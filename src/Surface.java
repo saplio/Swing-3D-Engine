@@ -42,7 +42,7 @@ public class Surface {
 	}
 
 	public Surface(List<Point3D> points) {
-		this (points, DEFAULT_COLOR);
+		this(points, DEFAULT_COLOR);
 	}
 
 	public Surface(List<Point3D> points, Color c) {
@@ -61,6 +61,12 @@ public class Surface {
 	public Color getColor() {
 		return color;
 	}
+
+	public void setColor(Color c) {
+		color = c;
+	}
+
+	//TODO: remove old methods
 
 	//getter method that returns coordinates of one of the surface's vertices
 	public double[] getPointCoords(int pointNum) {

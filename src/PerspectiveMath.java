@@ -8,22 +8,52 @@ import java.awt.Point;
 public class PerspectiveMath {
     //TODO: add static methods for perspective calculations and make other classes use these static methods for all perspective math
 
-    public static Surface rotateSurfaceXY(Surface surface, double radians, double x, double y) {
-        //TODO: add content
-        return null;
+    public static Surface getRotatedSurfaceXY(Surface surface, double radians, double axisX, double axisY) {
+        Surface rotatedSurface = new Surface(surface.getColor());
+        for (Point3D point : surface.getPoints()) {
+            rotatedSurface.addPoint(getRotatedPointXY(point, radians, axisX, axisY));
+
+        }
+        return rotatedSurface;
     }
 
-    public static Surface rotateSurfaceYZ(Surface surface, double radians, double y, double z) {
-        //TODO: add content
-        return null;
+    public static Point3D getRotatedPointXY(Point3D point, double radians, double axisX, double axisY) {
+        double newX = ((point.x - axisX) * Math.cos(radians) - (point.y - axisY) * Math.sin(radians)) + axisX;
+        double newY = ((point.x - axisX) * Math.sin(radians) + (point.y - axisY) * Math.cos(radians)) + axisY;
+        return new Point3D(newX, newY, point.z);
     }
 
-    public static Surface rotateSurfaceXZ(Surface surface, double radians, double x, double z) {
-        //TODO: add content
-        return null;
+    public static Surface getRotatedSurfaceYZ(Surface surface, double radians, double axisY, double axisZ) {
+        Surface rotatedSurface = new Surface(surface.getColor());
+        for (Point3D point : surface.getPoints()) {
+            rotatedSurface.addPoint(getRotatedPointYZ(point, radians, axisY, axisZ));
+
+        }
+        return rotatedSurface;
     }
 
-    public static Surface sliceSurface(Surface surface, double y) {
+    public static Point3D getRotatedPointYZ(Point3D point, double radians, double axisY, double axisZ) {
+        double newY = ((point.y - axisY) * Math.cos(radians) - (point.z - axisZ) * Math.sin(radians)) + axisY;
+        double newZ = ((point.y - axisY) * Math.sin(radians) + (point.z - axisZ) * Math.cos(radians)) + axisZ;
+        return new Point3D(point.x, newY, newZ);
+    }
+
+    public static Surface getRotatedSurfaceXZ(Surface surface, double radians, double axisX, double axisZ) {
+        Surface rotatedSurface = new Surface(surface.getColor());
+        for (Point3D point : surface.getPoints()) {
+            rotatedSurface.addPoint(getRotatedPointXZ(point, radians, axisX, axisZ));
+
+        }
+        return rotatedSurface;
+    }
+
+    public static Point3D getRotatedPointXZ(Point3D point, double radians, double axisX, double axisZ) {
+        double newX = ((point.x - axisX) * Math.cos(radians) - (point.z - axisZ) * Math.sin(radians)) + axisX;
+        double newZ = ((point.x - axisX) * Math.sin(radians) + (point.z - axisZ) * Math.cos(radians)) + axisZ;
+        return new Point3D(newX, point.y, newZ);
+    }
+
+    public static Surface getSlicedSurface(Surface surface, double y) {
         //TODO: add content
         return null;
     }

@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Class that acts as the actual 3D environment, storing all surfaces in the environment
@@ -12,11 +14,14 @@ public class Space {
     public Space() {
         surfaces = new ArrayList<Surface>();
         cameras = new ArrayList<Camera>();
-        
     }
 
     public void addSurface(Surface surface) {
         surfaces.add(surface);
+
+        for (Camera c : cameras) {
+            c.refresh();
+        }
     }
 
     public Camera createCamera() {
@@ -25,7 +30,7 @@ public class Space {
         return camera;
     }
 
-    public ArrayList<Surface> getSurfaces() {
-        return surfaces;
+    public List<Surface> getSurfaces() {
+        return Collections.unmodifiableList(surfaces);
     }
 }

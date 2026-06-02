@@ -24,55 +24,26 @@ public class Keyboard extends KeyAdapter {
 	//move the player depending on the key they pressed, or add an object to the program
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyChar() == 'd') {
-			if (camera != null) {
-				camera.moveCameraRelative(0.35, 0 , 0);
-				return;
-			}
-
-			spaceManager.movePlayerRelative(0.35, 0, 0);
+			camera.moveCameraRelative(0.35, 0 , 0);
 		}
 		else if (e.getKeyChar() == 'a') {
-			if (camera != null) {
-				camera.moveCameraRelative(-0.35, 0 , 0);
-				return;
-			}
-
-			spaceManager.movePlayerRelative(-0.35, 0, 0);
+			camera.moveCameraRelative(-0.35, 0 , 0);
 		}
 		else if (e.getKeyChar() == 'w') {
-			if (camera != null) {
-				camera.moveCameraRelative(0, 0.35 , 0);
-				return;
-			}
-
-			spaceManager.movePlayerRelative(0, 0.35, 0);
+			camera.moveCameraRelative(0, 0.35 , 0);
 		}
 		else if (e.getKeyChar() == 's') {
-			if (camera != null) {
-				camera.moveCameraRelative(0, -0.35 , 0);
-				return;
-			}
-
-			spaceManager.movePlayerRelative(0, -0.35, 0);
+			camera.moveCameraRelative(0, -0.35 , 0);
 		}
 		else if (e.getKeyChar() == ' ') {
-			if (camera != null) {
-				camera.moveCameraRelative(0, 0 , 0.35);
-				return;
-			}
-
-			spaceManager.movePlayerRelative(0, 0, 0.35);
+			camera.moveCameraRelative(0, 0 , 0.35);
 		}
 		else if (e.getKeyChar() == 'z') {
-			if (camera != null) {
-				camera.moveCameraRelative(0, 0 , -0.35);
-				return;
-			}
-
-			spaceManager.movePlayerRelative(0, 0, -0.35);
+			camera.moveCameraRelative(0, 0 , -0.35);
 		}
 		else if (e.getKeyChar() == 'n') {
 			// calls the object adder static method
+			//TODO: make it work with rework
 			new Thread(() -> {
 				try {
 					ObjectAdder.addObject(spaceManager);
@@ -84,22 +55,28 @@ public class Keyboard extends KeyAdapter {
 			}).start();
 		}
 		else if (e.getKeyChar() == 'r') {
-			spaceManager.movePlayerRelative(5, 0, 0);
+			camera.moveCameraRelative(5, 0, 0);
 		}
 		else if (e.getKeyChar() == 'l') {
-			spaceManager.movePlayerRelative(-5, 0, 0);
+			camera.moveCameraRelative(-5, 0, 0);
 		}
 		else if (e.getKeyChar() == 'q') {
-			spaceManager.turnPlayer(-Math.PI / 32);
+			camera.rotate(-Math.PI / 32, 0, 0);
 		}
 		else if (e.getKeyChar() == 'e') {
-			spaceManager.turnPlayer(Math.PI / 32);
+			camera.rotate(Math.PI / 32, 0, 0);
 		}
 		else if (e.getKeyChar() == 't') {
-			spaceManager.tiltPlayer(Math.PI / 32);
+			camera.rotate(0, -Math.PI / 32, 0);
 		}
 		else if (e.getKeyChar() == 'g') {
-			spaceManager.tiltPlayer(-Math.PI / 32);
+			camera.rotate(0, Math.PI / 32, 0);
+		}
+		else if (e.getKeyChar() == 'x') {
+			camera.rotate(0, 0, Math.PI / 32);
+		}
+		else if (e.getKeyChar() == 'c') {
+			camera.rotate(0, 0, -Math.PI / 32);
 		}
 	}
 }
