@@ -15,6 +15,7 @@ public class ObjectAdder {
 	
 	public static final String OBJECTS_PATH = "src/resources/objects/";
 
+	//TODO: update with rework
 	//static method for adding objects
 	public static void addObject(SpaceManager spaceManager) throws IOException, InvocationTargetException, InterruptedException {
 		String selection; //stores the chosen object to add

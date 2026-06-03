@@ -68,7 +68,7 @@ public class Main {
         //TODO: make it so camera can be added before making frame visible
         frame.add(camera);
         frame.revalidate();
-        camera.moveOrthogonal(0, 0, 2);
+        camera.moveTo(0, 0, 2);
 
         //add keyboard control
         frame.addKeyListener(new Keyboard(camera));

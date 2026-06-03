@@ -40,6 +40,8 @@ Rotation:
 - E: turn right 1/64th of a full rotation
 - T: tilt up 1/64th of a full rotation
 - G: tilt down 1/64th of a full rotation
+- X: roll left 1/64th of a full rotation
+- C: roll right 1/64th of a full rotation
 
 Misc:
 - N: begin the prompt to add an object from the objects folder to the environment

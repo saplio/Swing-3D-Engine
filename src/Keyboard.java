@@ -44,15 +44,15 @@ public class Keyboard extends KeyAdapter {
 		else if (e.getKeyChar() == 'n') {
 			// calls the object adder static method
 			//TODO: make it work with rework
-			new Thread(() -> {
-				try {
-					ObjectAdder.addObject(spaceManager);
-				}
-				catch (Exception ex) {
-					JOptionPane.showMessageDialog(null, "Something went wrong with the object adder", "Error", JOptionPane.ERROR_MESSAGE);
-					ex.printStackTrace();
-				}
-			}).start();
+			// new Thread(() -> {
+			// 	try {
+			// 		ObjectAdder.addObject(spaceManager);
+			// 	}
+			// 	catch (Exception ex) {
+			// 		JOptionPane.showMessageDialog(null, "Something went wrong with the object adder", "Error", JOptionPane.ERROR_MESSAGE);
+			// 		ex.printStackTrace();
+			// 	}
+			// }).start();
 		}
 		else if (e.getKeyChar() == 'r') {
 			camera.moveCameraRelative(5, 0, 0);

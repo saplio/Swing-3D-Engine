@@ -11,6 +11,7 @@ public class Surface {
 
 	public static final Color DEFAULT_COLOR = new Color(0, 0, 0, 0);
 
+	//TODO: remove
 	private double[] x; //stores x coordinates of vertices
 	private double[] y; //stores y coordinates of vertices
 	private double[] z; //stores z coordinates of vertices
@@ -19,6 +20,7 @@ public class Surface {
 
 	private ArrayList<Point3D> points;
 	
+	//TODO: remove
 	//constructor that passes positions of vertices in space
 	public Surface(double[] x, double[] y, double[] z) {
 		this.x = new double[x.length];
@@ -55,7 +57,9 @@ public class Surface {
 	}
 
 	public void addPoint(Point3D point) {
-		points.add(point);
+		if (!(points.contains(point))) {
+			points.add(point);
+		}
 	}
 
 	public Color getColor() {
@@ -67,7 +71,6 @@ public class Surface {
 	}
 
 	//TODO: remove old methods
-
 	//getter method that returns coordinates of one of the surface's vertices
 	public double[] getPointCoords(int pointNum) {
 		double[] coords = {x[pointNum], y[pointNum], z[pointNum]};

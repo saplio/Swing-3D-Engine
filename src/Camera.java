@@ -140,9 +140,12 @@ public class Camera extends JComponent {
         rotatedSurface = PerspectiveMath.getRotatedSurfaceYZ(rotatedSurface, pitch, y, z);
         rotatedSurface = PerspectiveMath.getRotatedSurfaceXZ(rotatedSurface, roll, x, z);
 
-        ScreenPolygon shape = new ScreenPolygon(rotatedSurface.getColor());
+        //FIXME: slicing slightly in front of the camera fixes visual bugs. Maybe figure out why and implement a cleaner fix
+        Surface slicedSurface = PerspectiveMath.getSlicedSurface(rotatedSurface, y + 0.001);
 
-        for (Point3D point3D : rotatedSurface.getPoints()) {
+        ScreenPolygon shape = new ScreenPolygon(slicedSurface.getColor());
+
+        for (Point3D point3D : slicedSurface.getPoints()) {
             Point screenPoint = PerspectiveMath.calcPointPerspective(point3D, getCameraPoint3D(), getSize(), fov);
             shape.addPoint(screenPoint.x, screenPoint.y);
         }

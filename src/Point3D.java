@@ -18,6 +18,12 @@ public class Point3D {
         this.z = z;
     }
 
+    public Point3D(Point3D point) {
+        x = point.x;
+        y = point.y;
+        z = point.z;
+    }
+
     public double getX() {
         return x;
     }
