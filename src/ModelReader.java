@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
  * in the project
  */
 
-public class ModelAdder {
+public class ModelReader {
 
 	public static final String OBJECTS_PATH = "src/resources/models/";
 	public static final String FILE_EXTENSION = ".txt";
@@ -27,13 +27,14 @@ public class ModelAdder {
 	public static final double PLACEMENT_DIST_RIGHT = 0;
 	public static final double PLACEMENT_DIST_UP = 0;
 
-	// TODO: change these methods to be called promptUserForModel and make a different AddModel method that takes a File as an argument
+	// TODO: change these methods to be called promptUserForModel and make a different readModel method that takes a File as an argument
+	// this would remove make the code more organized and remove the need for an "error" parameter
 
-	public static void addModel(Space space, Camera camera) {
-		addModel(space, camera, false);
+	public static void promptUserForModel(Space space, Camera camera) {
+		promptUserForModel(space, camera, false);
 	}
 
-	public static void addModel(Space space, Camera camera, boolean error) {
+	public static void promptUserForModel(Space space, Camera camera, boolean error) {
 		String selection = ERROR_FILE; // stores the chosen object to add
 		double scale = DEFAULT_SCALE; // stores the chosen scaling factor of object (defaults to 1)
 
@@ -85,7 +86,8 @@ public class ModelAdder {
 						scale = Double.parseDouble(strScale);
 					}
 					break;
-				} catch (NumberFormatException e) {
+				}
+				catch (NumberFormatException e) {
 					errorMessage = "Invalid input! Try again:\n";
 				}
 			}
@@ -120,7 +122,8 @@ public class ModelAdder {
 
 					try {
 						a = Integer.parseInt(colorInfo[3]);
-					} catch (ArrayIndexOutOfBoundsException e) {
+					}
+					catch (ArrayIndexOutOfBoundsException e) {
 					}
 
 					Surface surface = new Surface(new Color(r, g, b, a));
@@ -133,10 +136,6 @@ public class ModelAdder {
 						}
 
 						String[] pos = pointLine.replaceAll(REGEX, " ").trim().split(REGEX, DIMENSIONS);
-
-						if (pos.length > 3) {
-							throw new Exception("Extra coordinates in point line");
-						}
 
 						Point3D orthogonalPlacementDist = PerspectiveMath.cameraRelativeToOrthogonalXY(
 								PLACEMENT_DIST_RIGHT, PLACEMENT_DIST_FORWARD, PLACEMENT_DIST_UP, camera.getYaw());
@@ -171,21 +170,31 @@ public class ModelAdder {
 				for (Surface s : surfaces) {
 					space.addSurface(s);
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				// if something went wrong with the file scanning, create a placeholder object
 				// instead
-				addModel(space, camera, true);
+				// FIXME: add some sort of check to prevent a loop if the error model has been tampered with
+				promptUserForModel(space, camera, true);
 				e.printStackTrace();
 			}
 
 			// close scanner
 			scnr.close();
-		} catch (IOException e) {
-
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "IOException occurred",
 					"Error", JOptionPane.ERROR_MESSAGE);
 
 		}
 	}
+
+	// TODO: eventually make this return a "Model" object rather than an ArrayList of surfaces
+
+	public ArrayList<Surface> readModel(File f) {
+		// TODO: add content
+		return null;
+	}
+	
 }

@@ -12,34 +12,35 @@ public class Keyboard extends KeyAdapter {
 		camera = c;
 	}
 
-	//move the player depending on the key they pressed, or add an object to the program
+	// move the player depending on the key they pressed, or add an object to the program
+	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyChar() == 'd') {
-			camera.moveCameraRelative(0.35, 0 , 0);
+			camera.moveCameraRelativeXY(0.35, 0 , 0);
 		}
 		else if (e.getKeyChar() == 'a') {
-			camera.moveCameraRelative(-0.35, 0 , 0);
+			camera.moveCameraRelativeXY(-0.35, 0 , 0);
 		}
 		else if (e.getKeyChar() == 'w') {
-			camera.moveCameraRelative(0, 0.35 , 0);
+			camera.moveCameraRelativeXY(0, 0.35 , 0);
 		}
 		else if (e.getKeyChar() == 's') {
-			camera.moveCameraRelative(0, -0.35 , 0);
+			camera.moveCameraRelativeXY(0, -0.35 , 0);
 		}
 		else if (e.getKeyChar() == ' ') {
-			camera.moveCameraRelative(0, 0 , 0.35);
+			camera.moveCameraRelativeXY(0, 0 , 0.35);
 		}
 		else if (e.getKeyChar() == 'z') {
-			camera.moveCameraRelative(0, 0 , -0.35);
+			camera.moveCameraRelativeXY(0, 0 , -0.35);
 		}
 		else if (e.getKeyChar() == 'n') {
-			ModelAdder.addModel(camera.getSpace(), camera);
+			ModelReader.promptUserForModel(camera.getSpace(), camera);
 		}
 		else if (e.getKeyChar() == 'r') {
-			camera.moveCameraRelative(5, 0, 0);
+			camera.moveCameraRelativeXY(5, 0, 0);
 		}
 		else if (e.getKeyChar() == 'l') {
-			camera.moveCameraRelative(-5, 0, 0);
+			camera.moveCameraRelativeXY(-5, 0, 0);
 		}
 		else if (e.getKeyChar() == 'q') {
 			camera.rotate(-Math.PI / 32, 0, 0);

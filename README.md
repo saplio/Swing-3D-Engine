@@ -1,12 +1,12 @@
 # 3D Engine
 
-## Overview
-
 This project is a simple 3D graphics engine created using Java's Swing graphics library.
 
 ## Features and Controls
 
 This project contains classes that make it very straightforward to create a 3D environment and create camera views of the environment that can be displayed in Swing containers. Cameras can navigate the environment with keyboard controls, and the user can add custom models to the environment during runtime.
+
+The project uses a 3-dimensional coordinate system. With the default camera orientation, positive X is to the right, positive Y is forward, and positive Z is up.
 
 The main java file is hardcoded to automatically create a field of octagons in front of the camera when first starting the program.
 
@@ -16,7 +16,7 @@ The project does not currently have the ability to control the overlapping of su
 
 The model adding system reads from .txt files in the src/resources/models folder. To make a new model in this folder, you must define the color and vertices of each surface of the model like so, leaving a blank line between each block of surface values:
 ```
-[red] [green] [blue] // specify rgb value of surface color using integers from 0 - 255
+[red] [green] [blue] [alpha]* // specify rgba value of surface color using integers from 0 - 255 *alpha optional
 [x] [y] [z] // specify relative coordinates of first vertex using floats
 [x] [y] [z] // specify relative coordinates of second vertex using floats
 ... // repeat for all vertices of surface
@@ -55,6 +55,6 @@ I want to clean up this project to make it easier to understand and develop, and
 I also want to attempt to add the following features:
 - The ability for multiple cameras to view a single space from different positions (added!)
 - The ability to manipulate surfaces/models in an environment during runtime
-- Provide more customization for object files
+- Provide more customization for model files and update model reader
 - Add additional UI to the camera such as coordinate information
 - Create smoother camera movement

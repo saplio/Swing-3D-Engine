@@ -37,10 +37,13 @@ public class Surface {
 		return Collections.unmodifiableList(points);
 	}
 
-	public void addPoint(Point3D point) {
-		if (!(points.contains(point))) {
+	public boolean addPoint(Point3D point) {
+		if (points.size() == 0 || !(points.getLast().equals(point))) {
 			points.add(point);
+			return true;
 		}
+
+		return false;
 	}
 
 	public Color getColor() {
@@ -49,5 +52,25 @@ public class Surface {
 
 	public void setColor(Color c) {
 		color = c;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Surface)) {
+            return false;
+        }
+
+        Surface other = (Surface)obj;
+
+        if (other.color.equals(color) && other.points.equals(points)) {
+			return true;
+        }
+
+        return false;
+	}
+
+	@Override
+	public String toString() {
+		return "Surface[color=" + color + ",points.size=" + points.size() + "]";
 	}
 }
