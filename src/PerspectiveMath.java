@@ -21,7 +21,6 @@ public class PerspectiveMath {
         Surface rotatedSurface = new Surface(surface.getColor());
         for (Point3D point : surface.getPoints()) {
             rotatedSurface.addPoint(getRotatedPointXY(point, radians, axisX, axisY));
-
         }
         return rotatedSurface;
     }
@@ -55,7 +54,6 @@ public class PerspectiveMath {
         Surface rotatedSurface = new Surface(surface.getColor());
         for (Point3D point : surface.getPoints()) {
             rotatedSurface.addPoint(getRotatedPointYZ(point, radians, axisY, axisZ));
-
         }
         return rotatedSurface;
     }
@@ -88,7 +86,6 @@ public class PerspectiveMath {
         Surface rotatedSurface = new Surface(surface.getColor());
         for (Point3D point : surface.getPoints()) {
             rotatedSurface.addPoint(getRotatedPointXZ(point, radians, axisX, axisZ));
-
         }
         return rotatedSurface;
     }

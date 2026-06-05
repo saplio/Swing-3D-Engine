@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
 
 public class ModelReader {
 
-	public static final String OBJECTS_PATH = "src/resources/models/";
+	public static final String MODELS_PATH = "src/resources/models/";
 	public static final String FILE_EXTENSION = ".txt";
 	public static final String ERROR_FILE = "error";
 	public static final String REGEX = "(?:[^\\d.-]|-(?=\\D)|\\.(?=\\D))+";
@@ -39,7 +39,7 @@ public class ModelReader {
 		double scale = DEFAULT_SCALE; // stores the chosen scaling factor of object (defaults to 1)
 
 		if (!error) {
-			File projectFile = new File(OBJECTS_PATH); // get directory path where object files should be located
+			File projectFile = new File(MODELS_PATH); // get directory path where object files should be located
 
 			// get list of files in the project folder and filter out all files that are not
 			// text files
@@ -94,7 +94,7 @@ public class ModelReader {
 		}
 
 		// begin reading from file of chosen object
-		try (FileInputStream fileInputStream = new FileInputStream(OBJECTS_PATH + selection + FILE_EXTENSION);
+		try (FileInputStream fileInputStream = new FileInputStream(MODELS_PATH + selection + FILE_EXTENSION);
 				Scanner scnr = new Scanner(fileInputStream);) {
 			// try to create an object based on color and coordinate information from the
 			// files

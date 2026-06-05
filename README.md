@@ -50,7 +50,7 @@ Misc:
 
 I originally started this project at the beginning of college in the spring of 2025 when first learning the Java language. There are many misuses of Swing and design choices that make the program much more disorganized and harder to develop than it needs to be. 
 
-I want to clean up this project to make it easier to understand and develop, and rewrite it to use Swing properly and more efficiently.
+I want to clean up this project to make it easier to understand and develop, and rewrite it to use Swing properly and more efficiently. (complete!)
 
 I also want to attempt to add the following features:
 - The ability for multiple cameras to view a single space from different positions (added!)
@@ -58,3 +58,5 @@ I also want to attempt to add the following features:
 - Provide more customization for model files and update model reader
 - Add additional UI to the camera such as coordinate information
 - Create smoother camera movement
+- Some form of overlap control, even if not fully accurate
+- Ability to save 3D environments and reload them when running a separate instance of the program
