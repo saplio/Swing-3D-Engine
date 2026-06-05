@@ -1,49 +1,76 @@
-/*
- * custom class that holds the 3D coordinates of each individual surface in space
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Custom class that holds the 3D coordinates of each individual surface in space
  */
 
 public class Surface {
 
-	private double[] x; //stores x coordinates of vertices
-	private double[] y; //stores y coordinates of vertices
-	private double[] z; //stores z coordinates of vertices
+	public static final Color DEFAULT_COLOR = new Color(0, 0, 0, 0);
+
+	private Color color;
+
+	private ArrayList<Point3D> points;
+
+	public Surface() {
+		this(DEFAULT_COLOR);
+	}
+
+	public Surface(Color c) {
+		points = new ArrayList<Point3D>();
+		color = c;
+	}
+
+	public Surface(List<Point3D> points) {
+		this(points, DEFAULT_COLOR);
+	}
+
+	public Surface(List<Point3D> points, Color c) {
+		this.points = new ArrayList<Point3D>(points);
+		color = c;
+	}
 	
-	//constructor that passes positions of vertices in space
-	public Surface(double[] x, double[] y, double[] z) {
-		this.x = new double[x.length];
-		this.y = new double[y.length];
-		this.z = new double[z.length];
-		
-		for (int i = 0; i < x.length; ++i) {
-			this.x[i] = x[i];
-			this.y[i] = y[i];
-			this.z[i] = z[i];
+	public List<Point3D> getPoints() {
+		return Collections.unmodifiableList(points);
+	}
+
+	public boolean addPoint(Point3D point) {
+		if (points.size() == 0 || !(points.getLast().equals(point))) {
+			points.add(point);
+			return true;
 		}
+
+		return false;
 	}
-	
-	//getter method that returns coordinates of one of the surface's vertices
-	public double[] getPointCoords(int pointNum) {
-		double[] coords = {x[pointNum], y[pointNum], z[pointNum]};
-		return coords;
+
+	public Color getColor() {
+		return color;
 	}
-	
-	//get x coordinates of vertices
-	public double[] getXArray() {
-		return x;
+
+	public void setColor(Color c) {
+		color = c;
 	}
-	
-	//get y coordinates of vertices
-	public double[] getYArray() {
-		return y;
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Surface)) {
+            return false;
+        }
+
+        Surface other = (Surface)obj;
+
+        if (other.color.equals(color) && other.points.equals(points)) {
+			return true;
+        }
+
+        return false;
 	}
-	
-	//get z coordinates of vertices
-	public double[] getZArray() {
-		return z;
-	}
-	
-	//getter method that returns the amount of vertices
-	public int getNumPoints() {
-		return x.length;
+
+	@Override
+	public String toString() {
+		return "Surface[color=" + color + ",points.size=" + points.size() + "]";
 	}
 }
