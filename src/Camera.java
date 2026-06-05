@@ -1,8 +1,3 @@
-/**
- * Class that uses Swing to display the 3D environment from a camera view in a Swing container.
- * The camera can be moved around in the environment
- */
-
 import javax.swing.JComponent;
 
 import java.awt.Color;
@@ -11,6 +6,11 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.util.ArrayList;
+
+/**
+ * Class that uses Swing to display the 3D environment from a camera view in a Swing container.
+ * The camera can be moved around in the environment
+ */
 
 public class Camera extends JComponent {
 
@@ -42,6 +42,10 @@ public class Camera extends JComponent {
         this.z = z;
 
         fov = DEFAULT_FOV;
+    }
+
+    public Space getSpace() {
+        return space;
     }
 
     public double getXPos() {
@@ -99,9 +103,10 @@ public class Camera extends JComponent {
     }
 
     public void moveCameraRelative(double amtRight, double amtForward, double amtUp) {
-        x += amtForward * Math.sin(yaw) + amtRight * Math.sin(yaw + Math.PI / 2);
-		y += amtForward * Math.cos(yaw) + amtRight * Math.cos(yaw +  Math.PI / 2);
-		z += amtUp;
+        Point3D movement = PerspectiveMath.cameraRelativeToOrthogonalXY(amtRight, amtForward, amtUp, yaw);
+        x += movement.x;
+		y += movement.y;
+		z += movement.z;
 
          refresh();
         //TODO: this type of movement currently doesn't account for pitch and roll
@@ -141,7 +146,7 @@ public class Camera extends JComponent {
         rotatedSurface = PerspectiveMath.getRotatedSurfaceXZ(rotatedSurface, roll, x, z);
 
         //FIXME: slicing slightly in front of the camera fixes visual bugs. Maybe figure out why and implement a cleaner fix
-        Surface slicedSurface = PerspectiveMath.getSlicedSurface(rotatedSurface, y + 0.001);
+        Surface slicedSurface = PerspectiveMath.getSlicedSurfaceY(rotatedSurface, y + 0.001);
 
         ScreenPolygon shape = new ScreenPolygon(slicedSurface.getColor());
 
@@ -169,6 +174,10 @@ public class Camera extends JComponent {
         
         g2D.dispose();
     }
+
+    /**
+     * Extension of Polygon class that stores a color
+     */
 
     protected class ScreenPolygon extends Polygon {
         public Color color;

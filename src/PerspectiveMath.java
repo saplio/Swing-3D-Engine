@@ -53,12 +53,12 @@ public class PerspectiveMath {
         return new Point3D(newX, point.y, newZ);
     }
 
-    public static Surface getSlicedSurface(Surface surface, double slicePlaneY) {
+    public static Surface getSlicedSurfaceY(Surface surface, double slicePlaneY) {
         Surface slicedSurface = new Surface(surface.getColor());
 
         List<Point3D> surfacePoints = surface.getPoints();
         for (int i = 0; i < surfacePoints.size(); ++i) {
-            Surface slicedEdge = getSlicedLine(surfacePoints.get(i), surfacePoints.get((i + 1) % surfacePoints.size()), slicePlaneY);
+            Surface slicedEdge = getSlicedLineY(surfacePoints.get(i), surfacePoints.get((i + 1) % surfacePoints.size()), slicePlaneY);
             
             for (Point3D point : slicedEdge.getPoints()) {
                 slicedSurface.addPoint(point);
@@ -69,7 +69,7 @@ public class PerspectiveMath {
         return slicedSurface;
     }
 
-    public static Surface getSlicedLine(Point3D edgeStart, Point3D edgeEnd, double slicePlaneY) {
+    public static Surface getSlicedLineY(Point3D edgeStart, Point3D edgeEnd, double slicePlaneY) {
         Surface slicedLine = new Surface();
         
         if ((edgeStart.y - slicePlaneY > 0) && (edgeEnd.y - slicePlaneY > 0)) {
@@ -100,7 +100,14 @@ public class PerspectiveMath {
         return new Point(x, y);
     }
 
-    //The following are perspective calculation equations which produce warped perspective.
+    // TODO: make this a more general method that can account for all rotation
+    public static Point3D cameraRelativeToOrthogonalXY(double amtRight, double amtForward, double amtUp, double yaw) {
+        double x = amtForward * Math.sin(yaw) + amtRight * Math.sin(yaw + Math.PI / 2);
+		double y = amtForward * Math.cos(yaw) + amtRight * Math.cos(yaw +  Math.PI / 2);
+        return new Point3D(x, y, amtUp);
+    }
+
+    // The following are perspective calculation equations which produce warped perspective.
 
     public static Point calcPointPerspectivePincushion(Point3D point, Point3D cameraPoint, Dimension viewDimension, double fov) {
         int x = (viewDimension.width / 2) + (int)(fov * Math.atan((point.x - cameraPoint.x)/(point.y - cameraPoint.y)));

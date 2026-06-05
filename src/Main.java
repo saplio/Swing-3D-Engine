@@ -1,14 +1,15 @@
-/*
- * program with the main method that creates a frame, a space manager, and a keyboard listener
+/**
+ * Program with the main method that creates a frame, a space manager, and a keyboard listener
  */
 
-import javax.swing.*;
-import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
+import java.awt.Color;
+import java.awt.Point;
+
+import javax.swing.JFrame;
 
 public class Main {
 
-	public static void main(String[] args) throws InvocationTargetException, InterruptedException {
+	public static void main(String[] args) {
 		//create space
 		Space space = new Space();
 		
