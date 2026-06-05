@@ -44,7 +44,7 @@ Rotation:
 - C: roll right 1/64th of a full rotation
 
 Misc:
-- N: begin the prompt to add an object from the objects folder to the environment
+- N: begin the prompt to add a model from the models folder to the environment
 
 ## Plans for this project
 
