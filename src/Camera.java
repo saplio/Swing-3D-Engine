@@ -130,7 +130,7 @@ public class Camera extends JComponent {
 		y += movement.y;
 		z += movement.z;
 
-         refresh();
+        refresh();
     }
 
     // TODO: make a method that moves the camera fully camera relative
@@ -150,7 +150,7 @@ public class Camera extends JComponent {
         this.pitch = pitch;
         this.roll = roll;
 
-         refresh();
+        refresh();
     }
 
     /**
@@ -165,7 +165,7 @@ public class Camera extends JComponent {
         this.pitch += pitch;
         this.roll += roll;
 
-         refresh();
+        refresh();
     }
     
     /**
@@ -174,8 +174,10 @@ public class Camera extends JComponent {
     public void refresh() {
         shapes = new ArrayList<ScreenPolygon>();
 
-        for (Surface surface : space.getSurfaces()) {
-            shapes.add(calcSurfacePerspective(surface));
+        for (Model m : space.getModels()) {
+            for (Surface s : m.getSurfaces()) {
+                shapes.add(calcSurfacePerspective(s));
+            }
         }
 
         repaint();
@@ -221,6 +223,28 @@ public class Camera extends JComponent {
         }
         
         g2D.dispose();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Camera)) {
+            return false;
+        }
+
+        Camera other = (Camera)obj;
+
+        if (other.space.equals(space) && (other.fov == fov) &&
+                (other.x == x) && (other.y == y) && (other.z == z) &&
+                (other.yaw == yaw) && (other.pitch == pitch) && (other.roll == roll)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Camera[x=" + x + ",y=" + y + ",z=" + z + ",yaw=" + yaw + ",pitch=" + pitch + ",roll=" + roll + ",fov=" + fov + "]";
     }
 
     /**

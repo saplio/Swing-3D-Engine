@@ -38,6 +38,10 @@ public class Surface {
 	}
 
 	public boolean addPoint(Point3D point) {
+		if (point == null) {
+			return false;
+		}
+		
 		if (points.size() == 0 || !(points.getLast().equals(point))) {
 			points.add(point);
 			return true;

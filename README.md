@@ -45,6 +45,7 @@ Rotation:
 
 Misc:
 - N: begin the prompt to add a model from the models folder to the environment
+- I: print camera info to the console
 
 ## Plans for this project
 
