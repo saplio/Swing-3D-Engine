@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -19,6 +20,7 @@ public class ModelReader {
 	public static final String FILE_EXTENSION = ".txt";
 	public static final String ERROR_FILE = "error";
 	public static final String REGEX = "(?:[^\\d.-]|-(?=\\D)|\\.(?=\\D))+";
+	public static final String FILE_INCLUDE_CHAR = ";";
 
 	public static final double DEFAULT_SCALE = 1;
 	public static final int DEFAULT_TRANSPARENCY = 255;
@@ -27,7 +29,7 @@ public class ModelReader {
 	public static final double PLACEMENT_DIST_RIGHT = 0;
 	public static final double PLACEMENT_DIST_UP = 0;
 
-	// TODO: polish
+	// TODO: polish comments and reorganize code
 
 	public static File promptUserForModel() {
 		// stores the chosen object to add
@@ -62,7 +64,6 @@ public class ModelReader {
 		return new File(MODELS_PATH + selection + FILE_EXTENSION);
 	}
 
-	// TODO: polish
 	// TODO: make use of this method
 
 	public static double promptUserForScale() {
@@ -98,16 +99,21 @@ public class ModelReader {
 		return scale;
 	}
 
-	// TODO: eventually make this return a "Model" object rather than an ArrayList of surfaces
-	// TODO: allow including other model files in a model file
-	// TODO: polish
-
-
 	public static Model readModel(File f) {
+		ArrayList<File> fileList = new ArrayList<File>();
+		fileList.add(f);
+		return readModel(fileList);
+	}
+
+	// This private method exists to make sure an object file can't include itself indirectly
+
+	private static Model readModel(ArrayList<File> fileChain) {
+		File f = fileChain.getLast();
+
 		if (f == null) {
 			return null;
 		}
-		
+
 		Model model = new Model();
 
 		try (FileInputStream fileInputStream = new FileInputStream(f.getPath());
@@ -115,19 +121,49 @@ public class ModelReader {
 			// try to create an object based on color and coordinate information from the
 			// files
 			try {
-				// iterate through each surface described in the text file
+				// read through the text file
 				while (scnr.hasNextLine()) {
-					String colorLine;
+					String firstLine;
 
 					do {
-						colorLine = scnr.nextLine();
-					} while (colorLine.replaceAll(REGEX, "").isBlank() && scnr.hasNextLine());
+						firstLine = scnr.nextLine();
+					} while (!firstLine.contains(FILE_INCLUDE_CHAR) && firstLine.replaceAll(REGEX, "").isBlank() && scnr.hasNextLine());
 
-					if (colorLine.replaceAll(REGEX, "").isBlank()) {
+					if (firstLine.contains(FILE_INCLUDE_CHAR)) {
+						String filePath = MODELS_PATH + firstLine.substring(firstLine.indexOf(FILE_INCLUDE_CHAR) + 1, firstLine.lastIndexOf(FILE_INCLUDE_CHAR)) + FILE_EXTENSION;
+
+						File fileToInclude = new File(filePath);
+
+						if (!fileToInclude.exists()) {
+							throw new FileNotFoundException("Could not find file " + fileToInclude);
+						}
+
+						if (fileChain.contains(fileToInclude)) {
+							throw new Exception("Model file cannot include itself or other files that include it");
+						}
+
+						fileChain.add(fileToInclude);
+						Model modelToInclude = readModel(fileChain);
+						fileChain.removeLast();
+
+						//TODO: allow for control of included model scale in file
+						String[] pos = scnr.nextLine().replaceAll(REGEX, " ").trim().split(REGEX, DIMENSIONS);
+						
+						double x = Double.parseDouble(pos[0]);
+						double y = Double.parseDouble(pos[1]);
+						double z = Double.parseDouble(pos[2]);
+
+						modelToInclude.moveTo(x, y, z);
+						model.addModel(modelToInclude);
+						continue;
+					}
+
+					// this accounts for if the very last line is blank
+					if (firstLine.replaceAll(REGEX, "").isBlank()) {
 						break;
 					}
 
-					String[] colorInfo = colorLine.replaceAll(REGEX, " ").trim().split(REGEX, 4);
+					String[] colorInfo = firstLine.replaceAll(REGEX, " ").trim().split(REGEX, 4);
 
 					int r = Integer.parseInt(colorInfo[0]);
 					int g = Integer.parseInt(colorInfo[1]);
@@ -175,15 +211,12 @@ public class ModelReader {
 				e.printStackTrace();
 				return readModel(new File(MODELS_PATH + ERROR_FILE + FILE_EXTENSION));
 			}
-
-			// close scanner
-			scnr.close();
 		}
 		catch (IOException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "IOException occurred",
 					"Error", JOptionPane.ERROR_MESSAGE);
-
+			return null;
 		}
 
 		return model;

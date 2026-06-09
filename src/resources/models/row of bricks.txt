@@ -1,0 +1,20 @@
+;brick;
+0 0 0
+;brick;
+1.1 0 0
+;brick;
+2.2 0 0
+;brick;
+3.3 0 0
+;brick;
+4.4 0 0
+;brick;
+5.5 0 0
+;brick;
+6.6 0 0
+;brick;
+7.7 0 0
+;brick;
+8.8 0 0
+;brick;
+9.9 0 0

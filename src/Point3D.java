@@ -36,10 +36,25 @@ public class Point3D {
         return z;
     }
 
-    public void movePoint(double newX, double newY, double newZ) {
-        x = newX;
-        y = newY;
-        z = newZ;
+    public void moveTo(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public void moveBy(double x, double y, double z) {
+        this.x += x;
+        this.y += y;
+        this.z += z;
+    }
+
+    // TODO: make sure these work
+    public Point3D sum(Point3D p) {
+        return new Point3D(x + p.x, y + p.y, z + p.z);
+    }
+
+    public Point3D difference(Point3D p) {
+        return new Point3D(x - p.x, y- p.y, z - p.z);
     }
 
     @Override

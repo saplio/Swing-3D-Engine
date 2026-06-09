@@ -1,6 +1,5 @@
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.File;
 
 /**
  * Class that extends the built in KeyAdapter class in order to detect keyboard input in the program frame
@@ -67,6 +66,14 @@ public class Keyboard extends KeyAdapter {
 			System.out.println("Position: " + camera.getXPos() + ", " + camera.getYPos() + ", " + camera.getZPos());
 			System.out.println("Rotation: " + camera.getYaw() + ", " + camera.getPitch() + ", " + camera.getRoll());
 			System.out.println(camera.getSpace().toString());
+			int s = 0;
+			for (Model m: camera.getSpace().getModels()) {
+				s += m.getSurfaces().size();
+			}
+			System.out.println("Amount of surfaces: " + s);
+		}
+		else if (e.getKeyChar() == 'm') {
+			camera.getSpace().moveLastModel();
 		}
 	}
 }

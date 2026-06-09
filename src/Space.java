@@ -71,6 +71,15 @@ public class Space {
         return Collections.unmodifiableList(cameras);
     }
 
+    // FIXME: temporary method for testing
+    public void moveLastModel() {
+        models.getLast().moveBy(0, 1, 0);
+
+        for (Camera c : cameras) {
+            c.refresh();
+        }
+    }
+
     @Override
     public boolean equals(Object obj) {
 		if (!(obj instanceof Space)) {
