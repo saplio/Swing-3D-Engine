@@ -17,32 +17,40 @@ import javax.swing.JOptionPane;
 public class ModelReader {
 
 	public static final String MODELS_PATH = "src/resources/models/";
-	public static final String FILE_EXTENSION = ".txt";
-	public static final String ERROR_FILE = "error";
+	public static final String MAIN_FILE_EXTENSION = ".main";
+	public static final String SECONDARY_FILE_EXTENSION = ".txt";
+
+	public static final File ERROR_FILE = new File(MODELS_PATH + "error");
+
 	public static final String REGEX = "(?:[^\\d.-]|-(?=\\D)|\\.(?=\\D))+";
 	public static final String FILE_INCLUDE_CHAR = ";";
 
 	public static final double DEFAULT_SCALE = 1;
 	public static final int DEFAULT_TRANSPARENCY = 255;
 	public static final int DIMENSIONS = 3;
-	public static final double PLACEMENT_DIST_FORWARD = 2;
-	public static final double PLACEMENT_DIST_RIGHT = 0;
-	public static final double PLACEMENT_DIST_UP = 0;
 
 	// TODO: polish comments and reorganize code
 
 	public static File promptUserForModel() {
-		// stores the chosen object to add
-		// double scale = DEFAULT_SCALE; // stores the chosen scaling factor of object (defaults to 1)
+		File modelFiles = new File(MODELS_PATH); // get directory where model files should be located
 
-		File projectFile = new File(MODELS_PATH); // get directory path where object files should be located
+		if (!modelFiles.isDirectory()) {
+			JOptionPane.showMessageDialog(null, "Could not find directory " + MODELS_PATH, "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return null;
+		}
 
-		// get list of files in the project folder and filter out all files that are not
-		// text files
+		// get list of files in the project folder and add only directories that contain a valid main file
+		// to the options
 		ArrayList<String> options = new ArrayList<String>();
-		for (File f : projectFile.listFiles()) {
-			if (f.getName().endsWith(FILE_EXTENSION)) {
-				options.add(f.getName().replace(FILE_EXTENSION, ""));
+		for (File modelFolder : modelFiles.listFiles()) {
+			if (modelFolder.isDirectory()) {
+				for (File f : modelFolder.listFiles()) {
+					if (f.getName().endsWith(MAIN_FILE_EXTENSION)) {
+						options.add(modelFolder.getName());
+						break;
+					}
+				}
 			}
 		}
 		// exit the method if no text files are available
@@ -61,7 +69,7 @@ public class ModelReader {
 			return null;
 		}
 
-		return new File(MODELS_PATH + selection + FILE_EXTENSION);
+		return new File(MODELS_PATH + selection);
 	}
 
 	// TODO: make use of this method
@@ -82,9 +90,9 @@ public class ModelReader {
 				return scale;
 			}
 
-				// check if the user entered a valid double or left the prompt blank, add an
-				// error message to the next
-				// instance of the prompt if not
+			// check if the user entered a valid double or left the prompt blank, add an
+			// error message to the next
+			// instance of the prompt if not
 			try {
 				if (!strScale.isBlank()) {
 					scale = Double.parseDouble(strScale);
@@ -110,8 +118,28 @@ public class ModelReader {
 	private static Model readModel(ArrayList<File> fileChain) {
 		File f = fileChain.getLast();
 
+		// return null if null was passed to this method via the promptUserForScale method
 		if (f == null) {
 			return null;
+		}
+
+		// find the main file in the directory if the File is a directory
+		if (f.isDirectory()) {
+			boolean containsMain = false;
+			for (File innerFile : f.listFiles()) {
+				containsMain = true;
+				if (innerFile.getName().endsWith(MAIN_FILE_EXTENSION)) {
+					f = innerFile;
+					break;
+				}
+				containsMain = false;
+			}
+			
+			if (!containsMain) {
+				// TODO: add some sort of system to prevent infinite loops if the error file has been tampered with
+				new Exception("Could not find " + MAIN_FILE_EXTENSION + " file").printStackTrace();
+				return readModel(ERROR_FILE);
+			}
 		}
 
 		Model model = new Model();
@@ -121,7 +149,7 @@ public class ModelReader {
 			// try to create an object based on color and coordinate information from the
 			// files
 			try {
-				// read through the text file
+				// read through the file
 				while (scnr.hasNextLine()) {
 					String firstLine;
 
@@ -130,12 +158,19 @@ public class ModelReader {
 					} while (!firstLine.contains(FILE_INCLUDE_CHAR) && firstLine.replaceAll(REGEX, "").isBlank() && scnr.hasNextLine());
 
 					if (firstLine.contains(FILE_INCLUDE_CHAR)) {
-						String filePath = MODELS_PATH + firstLine.substring(firstLine.indexOf(FILE_INCLUDE_CHAR) + 1, firstLine.lastIndexOf(FILE_INCLUDE_CHAR)) + FILE_EXTENSION;
+						String directoryPath = f.getParent() + "/" + firstLine.substring(firstLine.indexOf(FILE_INCLUDE_CHAR) + 1, firstLine.lastIndexOf(FILE_INCLUDE_CHAR));
+						String filePath = directoryPath + SECONDARY_FILE_EXTENSION;
 
+						File directoryToInclude = new File(directoryPath);
 						File fileToInclude = new File(filePath);
 
-						if (!fileToInclude.exists()) {
-							throw new FileNotFoundException("Could not find file " + fileToInclude);
+						if (!directoryToInclude.exists()) {
+							if (!fileToInclude.exists()) {
+								throw new FileNotFoundException("Could not find file " + fileToInclude);
+							}
+						}
+						else {
+							fileToInclude = directoryToInclude;
 						}
 
 						if (fileChain.contains(fileToInclude)) {
@@ -146,7 +181,7 @@ public class ModelReader {
 						Model modelToInclude = readModel(fileChain);
 						fileChain.removeLast();
 
-						//TODO: allow for control of included model scale in file
+						// TODO: allow for control of included model scale in file
 						String[] pos = scnr.nextLine().replaceAll(REGEX, " ").trim().split(REGEX, DIMENSIONS);
 						
 						double x = Double.parseDouble(pos[0]);
@@ -170,6 +205,7 @@ public class ModelReader {
 					int b = Integer.parseInt(colorInfo[2]);
 					int a = DEFAULT_TRANSPARENCY;
 
+					// attempt to find an alpha value, use default transparency if one was not written
 					try {
 						a = Integer.parseInt(colorInfo[3]);
 					}
@@ -209,7 +245,7 @@ public class ModelReader {
 			catch (Exception e) {
 				// TODO: add some sort of system to prevent infinite loops if the error file has been tampered with
 				e.printStackTrace();
-				return readModel(new File(MODELS_PATH + ERROR_FILE + FILE_EXTENSION));
+				return readModel(ERROR_FILE);
 			}
 		}
 		catch (IOException e) {

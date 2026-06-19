@@ -43,6 +43,8 @@ public class Camera extends JComponent {
         this.z = z;
 
         fov = DEFAULT_FOV;
+
+        refresh();
     }
 
     public Space getSpace() {
@@ -172,13 +174,15 @@ public class Camera extends JComponent {
      * Recalculate the perspective on all the surfaces in the space and repaint the Swing component.
      */
     public void refresh() {
-        shapes = new ArrayList<ScreenPolygon>();
+        ArrayList<ScreenPolygon> newShapes = new ArrayList<ScreenPolygon>();
 
         for (Model m : space.getModels()) {
             for (Surface s : m.getSurfaces()) {
-                shapes.add(calcSurfacePerspective(s));
+                newShapes.add(calcSurfacePerspective(s));
             }
         }
+
+        shapes = newShapes;
 
         repaint();
     }
@@ -255,7 +259,7 @@ public class Camera extends JComponent {
         public Color color;
 
         public ScreenPolygon(Color c) {
-            color = c; 
+            color = c;
         }
     }
 }

@@ -1,5 +1,5 @@
-import java.awt.Color;
 import java.awt.Point;
+import java.io.File;
 
 import javax.swing.JFrame;
 
@@ -14,41 +14,12 @@ public class Main {
 		Space space = new Space();
 		
 		// create a field of octagons
-		// TODO: make this octagon field as models instead of hardcoding
-		double[] ShapeX = {0, 0.5, 1, 1, 0.5, 0, -0.5, -0.5};
-		double[] ShapeY = {0, 0, 0.5, 1, 1.5, 1.5, 1, 0.5};
-		double[] ShapeZ = {0, 0, 0.1, 0.2, 0.3, 0.3, 0.2, 0.1};
+		Model octagons = ModelReader.readModel(new File(ModelReader.MODELS_PATH + "octagon grid"));
+		System.out.println(octagons.getLocation());
+		octagons.moveBy(-8.75, 2, 0);
+		space.addModel(octagons);
 		
-		double[] ShapeZ2 = {0, 0, 0, 0, 0, 0, 0, 0};
-
-		for (int l = 0; l < 17; l += 4) {
-			for (int j = -4; j < 5; ++j) {	
-				if (Math.abs(j) % 2 == 1) {
-					for (int i = 2; i < 9; i += 2) {
-						Surface s = new Surface(Color.RED); 
-						for (int k = 0; k < ShapeX.length; ++k) {
-							s.addPoint(new Point3D(j * 2 + ShapeX[k] - 0.25,
-									i + ShapeY[k],
-									l + ShapeZ[k]));
-						}
-						space.addSurface(s);
-					}
-				}
-				else {
-					for (int i = 2; i < 9; i += 2) {
-						Surface s = new Surface(Color.RED);
-						for (int k = 0; k < ShapeX.length; ++k) {
-							s.addPoint(new Point3D(j * 2 + ShapeX[k] - 0.25,
-									i + ShapeY[k],
-									l + ShapeZ2[k]));
-						}
-						space.addSurface(s);
-					}
-				}
-			}
-		}
-		
-		// create two cameras of the same space
+		// create two cameras in the same space
 		createDisplay(space, new Point(100, 200));
         createDisplay(space, new Point( 700, 200));
 	}
