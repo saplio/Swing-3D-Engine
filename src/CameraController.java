@@ -44,7 +44,7 @@ public class CameraController extends KeyAdapter {
 
 			if (!(m == null)) {
 				m.moveTo(p.x, p.y, p.z);
-				m.rotateLikeCameraBy(camera.getYaw(), 0, 0);
+				m.rotateXY(camera.getYaw());
 				camera.getSpace().addModel(m);
 			}
 		}

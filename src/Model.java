@@ -3,7 +3,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Class that stores a collection of surfaces that behave as a unit
+ * Class that stores a collection of surfaces that behave as a unit.
  */
 
 public class Model {
@@ -71,6 +71,16 @@ public class Model {
 		location = location.sum(new Point3D(x, y, z));
 	}
 
+	// TODO: improve model rotation system
+
+	public void rotateXY(double yaw) {
+		ArrayList<Surface> newSurfaces = new ArrayList<Surface>();
+		for (Surface s : surfaces) {
+			newSurfaces.add(PerspectiveMath.getRotatedSurfaceXY(s, yaw, location.x, location.y));
+		}
+		surfaces = newSurfaces;
+	}
+
 	public void rotateLikeCameraBy(double yaw, double pitch, double roll) {
 		ArrayList<Surface> newSurfaces = new ArrayList<Surface>();
 		for (Surface s : surfaces) {
@@ -79,7 +89,7 @@ public class Model {
 		surfaces = newSurfaces;
 	}
 
-	// TODO: add scale and rotate methods
+	// TODO: add scale method
 
 	@Override
 	public boolean equals(Object obj) {

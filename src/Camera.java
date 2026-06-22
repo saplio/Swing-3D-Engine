@@ -187,7 +187,7 @@ public class Camera extends JComponent {
 
         for (Camera c : space.getCameras()) {
             if (!c.equals(this)) {
-                Model cameraCube = ModelReader.readModel(new File(ModelReader.MODELS_PATH + "camera cube"));
+                Model cameraCube = ModelReader.readModel(new File(ModelReader.MODELS_PATH + "camera"));
                 cameraCube.rotateLikeCameraBy(c.getYaw(), c.getPitch(), c.getRoll());
                 Point3D cameraPoint = c.getCameraPoint3D();
                 cameraCube.moveTo(cameraPoint.x, cameraPoint.y, cameraPoint.z);

@@ -48,7 +48,6 @@ public class Point3D {
         this.z += z;
     }
 
-    // TODO: make sure these work
     public Point3D sum(Point3D p) {
         return new Point3D(x + p.x, y + p.y, z + p.z);
     }
