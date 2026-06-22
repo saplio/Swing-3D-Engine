@@ -19,7 +19,7 @@ public class Space {
     }
 
     public boolean addModel(Model model) {
-        if (model == null || models.contains(model)) {
+        if (models.contains(model)) {
             return false;
         }
 

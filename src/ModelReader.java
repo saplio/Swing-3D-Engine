@@ -22,7 +22,7 @@ public class ModelReader {
 
 	public static final File ERROR_FILE = new File(MODELS_PATH + "error");
 
-	public static final String REGEX = "(?:[^\\d.-]|-(?=\\D)|\\.(?=\\D))+";
+	public static final String REGEX = "(?:[^\\d.-]|-(?=\\.\\D)|\\.(?=\\D))+";
 	public static final String FILE_INCLUDE_CHAR = ";";
 
 	public static final double DEFAULT_SCALE = 1;
@@ -136,8 +136,12 @@ public class ModelReader {
 			}
 			
 			if (!containsMain) {
-				// TODO: add some sort of system to prevent infinite loops if the error file has been tampered with
 				new Exception("Could not find " + MAIN_FILE_EXTENSION + " file").printStackTrace();
+
+				if (fileChain.getLast().equals(ERROR_FILE)) {
+					return null;
+				}
+
 				return readModel(ERROR_FILE);
 			}
 		}
@@ -243,8 +247,12 @@ public class ModelReader {
 				}
 			}
 			catch (Exception e) {
-				// TODO: add some sort of system to prevent infinite loops if the error file has been tampered with
 				e.printStackTrace();
+
+				if (fileChain.getLast().equals(ERROR_FILE)) {
+					return null;
+				}
+				
 				return readModel(ERROR_FILE);
 			}
 		}

@@ -71,6 +71,16 @@ public class Model {
 		location = location.sum(new Point3D(x, y, z));
 	}
 
+	public void rotateLikeCameraBy(double yaw, double pitch, double roll) {
+		ArrayList<Surface> newSurfaces = new ArrayList<Surface>();
+		for (Surface s : surfaces) {
+			newSurfaces.add(PerspectiveMath.getReverseViewRotatedSurface(s, yaw, pitch, roll, location));
+		}
+		surfaces = newSurfaces;
+	}
+
+	// TODO: add scale and rotate methods
+
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof Model)) {

@@ -9,10 +9,10 @@ import java.util.List;
 public class PerspectiveMath {
 
     /**
-     * Rotate a surface on the XY plane.
+     * Rotate a {@code Surface} on the XY plane.
      * 
      * @param surface {@code Surface} to rotate
-     * @param radians Amount to rotate surface (positive is counterclockwise)
+     * @param radians Amount to rotate (positive is counterclockwise)
      * @param axisX Pivot axis X coordinate
      * @param axisY Pivot axis Y coordinate
      * @return New {@code Surface} with the rotation applied
@@ -26,10 +26,10 @@ public class PerspectiveMath {
     }
 
     /**
-     * Rotate a point on the XY plane.
+     * Rotate a {@code Point3D} on the XY plane.
      * 
      * @param point {@code Point3D} to rotate
-     * @param radians Amount to rotate point (positive is counterclockwise)
+     * @param radians Amount to rotate (positive is counterclockwise)
      * @param axisX Pivot axis X coordinate
      * @param axisY Pivot axis Y coordinate
      * @return New {@code Point3D} with the rotation applied
@@ -42,10 +42,10 @@ public class PerspectiveMath {
 
 
     /**
-     * Rotate a surface on the YZ plane.
+     * Rotate a {@code Surface} on the YZ plane.
      * 
      * @param surface {@code Surface} to rotate
-     * @param radians Amount to rotate surface (positive is counterclockwise)
+     * @param radians Amount to rotate (positive is counterclockwise)
      * @param axisY Pivot axis Y coordinate
      * @param axisZ Pivot axis Z coordinate
      * @return New {@code Surface} with the rotation applied
@@ -59,10 +59,10 @@ public class PerspectiveMath {
     }
 
     /**
-     * Rotate a point on the YZ plane.
+     * Rotate a {@code Point3D} on the YZ plane.
      * 
      * @param point {@code Point3D} to rotate
-     * @param radians Amount to rotate point (positive is counterclockwise)
+     * @param radians Amount to rotate (positive is counterclockwise)
      * @param axisY Pivot axis Y coordinate
      * @param axisZ Pivot axis Z coordinate
      * @return New {@code Point3D} with the rotation applied
@@ -74,10 +74,10 @@ public class PerspectiveMath {
     }
 
     /**
-     * Rotate a surface on the XZ plane.
+     * Rotate a {@code Surface} on the XZ plane.
      * 
      * @param surface {@code Surface} to rotate
-     * @param radians Amount to rotate surface (positive is counterclockwise)
+     * @param radians Amount to rotate (positive is counterclockwise)
      * @param axisX Pivot axis X coordinate
      * @param axisZ Pivot axis Z coordinate
      * @return New {@code Surface} with the rotation applied
@@ -91,10 +91,10 @@ public class PerspectiveMath {
     }
 
     /**
-     * Rotate a point on the XZ plane.
+     * Rotate a {@code Point3D} on the XZ plane.
      * 
      * @param point {@code Point3D} to rotate
-     * @param radians Amount to rotate point (positive is counterclockwise)
+     * @param radians Amount to rotate (positive is counterclockwise)
      * @param axisX Pivot axis X coordinate
      * @param axisZ Pivot axis Z coordinate
      * @return New {@code Point3D} with the rotation applied
@@ -103,6 +103,78 @@ public class PerspectiveMath {
         double newX = ((point.x - axisX) * Math.cos(radians) - (point.z - axisZ) * Math.sin(radians)) + axisX;
         double newZ = ((point.x - axisX) * Math.sin(radians) + (point.z - axisZ) * Math.cos(radians)) + axisZ;
         return new Point3D(newX, point.y, newZ);
+    }
+
+    /**
+     * General rotation method for a {@code Surface} for perspective calculations.
+     * 
+     * @param surface {@code Surface} to rotate
+     * @param yaw XY rotation in radians
+     * @param pitch YZ rotation in radians
+     * @param roll XZ rotation in radians
+     * @param pointOfRotation Pivot point
+     * @return New {@code Surface} with the rotation applied
+     */
+    public static Surface getViewRotatedSurface(Surface surface, double yaw, double pitch, double roll, Point3D pointOfRotation) {
+        Surface rotatedSurface = new Surface(surface.getColor());
+        for (Point3D point : surface.getPoints()) {        
+            rotatedSurface.addPoint(getViewRotatedPoint(point, yaw, pitch, roll, pointOfRotation));
+        }
+        return rotatedSurface;
+    }
+
+    /**
+     * General rotation method for a {@code Point3D} for perspective calculations.
+     * 
+     * @param point {@code Point3D} to rotate
+     * @param yaw XY rotation in radians
+     * @param pitch YZ rotation in radians
+     * @param roll XZ rotation in radians
+     * @param pointOfRotation Pivot point
+     * @return New {@code Point3D} with the rotation applied
+     */
+    public static Point3D getViewRotatedPoint(Point3D point, double yaw, double pitch, double roll, Point3D pointOfRotation) {
+        Point3D rotatedPoint;
+        rotatedPoint = getRotatedPointXY(point, yaw, pointOfRotation.x, pointOfRotation.y);
+        rotatedPoint = getRotatedPointYZ(rotatedPoint, pitch, pointOfRotation.y, pointOfRotation.z);
+        rotatedPoint = getRotatedPointXZ(rotatedPoint, roll, pointOfRotation.x, pointOfRotation.z);
+        return rotatedPoint;
+    }
+
+    /**
+     * Reverse order of the general rotation method for a {@code Surface} for perspective calculations.
+     * 
+     * @param surface {@code Surface} to rotate
+     * @param yaw XY rotation in radians
+     * @param pitch YZ rotation in radians
+     * @param roll XZ rotation in radians
+     * @param pointOfRotation Pivot point
+     * @return New {@code Surface} with the rotation applied
+     */
+    public static Surface getReverseViewRotatedSurface(Surface surface, double yaw, double pitch, double roll, Point3D pointOfRotation) {
+        Surface rotatedSurface = new Surface(surface.getColor());
+        for (Point3D point : surface.getPoints()) {        
+            rotatedSurface.addPoint(getReverseViewRotatedPoint(point, yaw, pitch, roll, pointOfRotation));
+        }
+        return rotatedSurface;
+    }
+
+    /**
+     * Reverse order of the general rotation method for a {@code Point3D} for perspective calculations.
+     * 
+     * @param point {@code Point3D} to rotate
+     * @param yaw XY rotation in radians
+     * @param pitch YZ rotation in radians
+     * @param roll XZ rotation in radians
+     * @param pointOfRotation Pivot point
+     * @return New {@code Point3D} with the rotation applied
+     */
+    public static Point3D getReverseViewRotatedPoint(Point3D point, double yaw, double pitch, double roll, Point3D pointOfRotation) {
+        Point3D rotatedPoint;
+        rotatedPoint = getRotatedPointXZ(point, roll, pointOfRotation.x, pointOfRotation.z);
+        rotatedPoint = getRotatedPointYZ(rotatedPoint, pitch, pointOfRotation.y, pointOfRotation.z);
+        rotatedPoint = getRotatedPointXY(rotatedPoint, yaw, pointOfRotation.y, pointOfRotation.z);
+        return rotatedPoint;
     }
 
     /**
@@ -188,8 +260,8 @@ public class PerspectiveMath {
     public static Point3D cameraRelativeToOrthogonalXY(double amtRight, double amtForward, double amtUp, double yaw) {
         // TODO: make this a more general method that can account for all rotation
 
-        double x = amtForward * Math.sin(yaw) + amtRight * Math.sin(yaw + Math.PI / 2);
-		double y = amtForward * Math.cos(yaw) + amtRight * Math.cos(yaw +  Math.PI / 2);
+        double x = amtForward * Math.sin(-yaw) + amtRight * Math.sin(-yaw + Math.PI / 2);
+		double y = amtForward * Math.cos(-yaw) + amtRight * Math.cos(-yaw +  Math.PI / 2);
         return new Point3D(x, y, amtUp);
     }
 

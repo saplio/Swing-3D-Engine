@@ -5,10 +5,15 @@ import java.awt.event.KeyEvent;
  * Class that extends the built in KeyAdapter class in order to detect keyboard input in the program frame
  */
 
-public class Keyboard extends KeyAdapter {
+public class CameraController extends KeyAdapter {
+
+	public static final double RIGHT_PLACEMENT = 0;
+	public static final double FORWARD_PLACEMENT = 2;
+	public static final double UP_PLACEMENT = 0;
+
 	private Camera camera;
 	
-	public Keyboard (Camera c) {
+	public CameraController (Camera c) {
 		camera = c;
 	}
 
@@ -34,8 +39,14 @@ public class Keyboard extends KeyAdapter {
 			camera.moveCameraRelativeXY(0, 0 , -0.35);
 		}
 		else if (e.getKeyChar() == 'n') {
-			// TODO: remake place where model added depend on camera
-			camera.getSpace().addModel(ModelReader.readModel(ModelReader.promptUserForModel()));
+			Model m = ModelReader.readModel(ModelReader.promptUserForModel());
+			Point3D p = PerspectiveMath.cameraRelativeToOrthogonalXY(RIGHT_PLACEMENT, FORWARD_PLACEMENT, UP_PLACEMENT, camera.getYaw()).sum(camera.getCameraPoint3D());
+
+			if (!(m == null)) {
+				m.moveTo(p.x, p.y, p.z);
+				m.rotateLikeCameraBy(camera.getYaw(), 0, 0);
+				camera.getSpace().addModel(m);
+			}
 		}
 		else if (e.getKeyChar() == 'r') {
 			camera.moveCameraRelativeXY(5, 0, 0);
@@ -44,16 +55,16 @@ public class Keyboard extends KeyAdapter {
 			camera.moveCameraRelativeXY(-5, 0, 0);
 		}
 		else if (e.getKeyChar() == 'q') {
-			camera.rotate(-Math.PI / 32, 0, 0);
-		}
-		else if (e.getKeyChar() == 'e') {
 			camera.rotate(Math.PI / 32, 0, 0);
 		}
+		else if (e.getKeyChar() == 'e') {
+			camera.rotate(-Math.PI / 32, 0, 0);
+		}
 		else if (e.getKeyChar() == 't') {
-			camera.rotate(0, -Math.PI / 32, 0);
+			camera.rotate(0, Math.PI / 32, 0);
 		}
 		else if (e.getKeyChar() == 'g') {
-			camera.rotate(0, Math.PI / 32, 0);
+			camera.rotate(0, -Math.PI / 32, 0);
 		}
 		else if (e.getKeyChar() == 'x') {
 			camera.rotate(0, 0, Math.PI / 32);

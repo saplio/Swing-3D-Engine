@@ -15,7 +15,6 @@ public class Main {
 		
 		// create a field of octagons
 		Model octagons = ModelReader.readModel(new File(ModelReader.MODELS_PATH + "octagon grid"));
-		System.out.println(octagons.getLocation());
 		octagons.moveBy(-8.75, 2, 0);
 		space.addModel(octagons);
 		
@@ -43,6 +42,6 @@ public class Main {
         camera.moveTo(0, 0, 2);
 
         // add keyboard control
-        frame.addKeyListener(new Keyboard(camera));
+        frame.addKeyListener(new CameraController(camera));
     }
 }
