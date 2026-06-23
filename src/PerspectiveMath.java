@@ -239,12 +239,12 @@ public class PerspectiveMath {
      * @param point Point in space to perform projection on
      * @param cameraPoint Point where center of projection screen is located in space
      * @param viewDimension Dimensions of the projection screen
-     * @param fov Field of view
+     * @param fovFactor Field of view factor
      * @return {@code Point} that represents the position where the {@code Point3D} should be displayed on the projection screen
      */
-    public static Point calcPointPerspective(Point3D point, Point3D cameraPoint, Dimension viewDimension, double fov) {
-        int x = (viewDimension.width / 2) + (int)(fov * (point.x - cameraPoint.x)/(point.y - cameraPoint.y));
-        int y = (viewDimension.height / 2) - (int)(fov * (point.z - cameraPoint.z)/(point.y - cameraPoint.y));
+    public static Point calcPointPerspective(Point3D point, Point3D cameraPoint, Dimension viewDimension, double fovFactor) {
+        int x = (viewDimension.width / 2) + (int)(fovFactor * (point.x - cameraPoint.x)/(point.y - cameraPoint.y));
+        int y = (viewDimension.height / 2) - (int)(fovFactor * (point.z - cameraPoint.z)/(point.y - cameraPoint.y));
         return new Point(x, y);
     }
 
@@ -273,12 +273,12 @@ public class PerspectiveMath {
      * @param point Point in space to perform projection on
      * @param cameraPoint Point where center of projection screen is located in space
      * @param viewDimension Dimensions of the projection screen
-     * @param fov Field of view
+     * @param fovFactor Field of view factor
      * @return {@code Point} that represents the position where the {@code Point3D} should be displayed on the projection screen
      */
-    public static Point calcPointPerspectivePincushion(Point3D point, Point3D cameraPoint, Dimension viewDimension, double fov) {
-        int x = (viewDimension.width / 2) + (int)(fov * Math.atan((point.x - cameraPoint.x)/(point.y - cameraPoint.y)));
-        int y = (viewDimension.height / 2) - (int)(fov * Math.atan((point.z - cameraPoint.z)/(point.y - cameraPoint.y)));
+    public static Point calcPointPerspectivePincushion(Point3D point, Point3D cameraPoint, Dimension viewDimension, double fovFactor) {
+        int x = (viewDimension.width / 2) + (int)(fovFactor * Math.atan((point.x - cameraPoint.x)/(point.y - cameraPoint.y)));
+        int y = (viewDimension.height / 2) - (int)(fovFactor * Math.atan((point.z - cameraPoint.z)/(point.y - cameraPoint.y)));
         return new Point(x, y);
     }
 
@@ -288,10 +288,10 @@ public class PerspectiveMath {
      * @param point Point in space to perform projection on
      * @param cameraPoint Point where center of projection screen is located in space
      * @param viewDimension Dimensions of the projection screen
-     * @param fov Field of view
+     * @param fovFactor Field of view factor
      * @return {@code Point} that represents the position where the {@code Point3D} should be displayed on the projection screen
      */
-    public static Point calcPointPerspectiveFisheye(Point3D point, Point3D cameraPoint, Dimension viewDimension, double fov) {
+    public static Point calcPointPerspectiveFisheye(Point3D point, Point3D cameraPoint, Dimension viewDimension, double fovFactor) {
         double theta = Math.atan((point.z - cameraPoint.z) / (point.x - cameraPoint.x));
 		
 		if ((point.x - cameraPoint.x < 0) && (point.z - cameraPoint.z >= 0)) {
@@ -304,7 +304,7 @@ public class PerspectiveMath {
 			theta += Math.PI * 2;
 		}
 		
-		double r = (fov * (Math.atan(Math.hypot((point.x - cameraPoint.x), (point.z - cameraPoint.z)) / (point.y - cameraPoint.y)) / (Math.PI * 0.45)));
+		double r = (fovFactor * (Math.atan(Math.hypot((point.x - cameraPoint.x), (point.z - cameraPoint.z)) / (point.y - cameraPoint.y)) / (Math.PI * 0.45)));
 		
 		int x = (int)((viewDimension.width / 2) + (r * Math.cos(theta)));	
         int y = (int)((viewDimension.height / 2) - (r * Math.sin(theta)));

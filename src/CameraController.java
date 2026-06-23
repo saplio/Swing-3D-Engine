@@ -88,5 +88,13 @@ public class CameraController extends KeyAdapter {
 			// camera.getSpace().moveLastModel();
 			camera.getSpace().scaleLastModel();
 		}
+		else if (e.getKeyChar() == 'h') {
+			// camera.getSpace().moveLastModel();
+			camera.setFovFactor(camera.getFovFactor() + 10);
+		}
+		else if (e.getKeyChar() == 'j') {
+			// camera.getSpace().moveLastModel();
+			camera.setFovFactor(camera.getFovFactor() - 10);
+		}
 	}
 }

@@ -31,14 +31,10 @@ public class Main {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocation(pos);
 
-        // create camera
-        Camera camera = space.createCamera();
-
         // add camera to container
-        frame.setVisible(true);
-        // TODO: make it so camera can be added before making frame visible
+        Camera camera = space.createCamera();
         frame.add(camera);
-        frame.revalidate();
+        frame.setVisible(true);
         camera.moveTo(0, 0, 2);
 
         // add keyboard control

@@ -15,8 +15,7 @@ import java.util.ArrayList;
 
 public class Camera extends JComponent {
 
-    // FIXME: this may not actually be the field of view but rather a value that controls field of view, find a better name
-    public static final double DEFAULT_FOV = 400;
+    public static final double DEFAULT_FOV_FACTOR = 400;
 
     private double x;
     private double y;
@@ -26,7 +25,7 @@ public class Camera extends JComponent {
     private double pitch;
     private double roll;
 
-    private double fov;
+    private double fovFactor;
 
     private Space space;
 
@@ -43,7 +42,7 @@ public class Camera extends JComponent {
         this.y = y;
         this.z = z;
 
-        fov = DEFAULT_FOV;
+        fovFactor = DEFAULT_FOV_FACTOR;
 
         refresh();
     }
@@ -80,12 +79,12 @@ public class Camera extends JComponent {
         return roll;
     }
 
-    public double getFOV() {
-        return fov;
+    public double getFovFactor() {
+        return fovFactor;
     }
 
-    public void setFOV(double fov) {
-        this.fov = fov;
+    public void setFovFactor(double fovFactor) {
+        this.fovFactor = fovFactor;
 
         refresh();
     }
@@ -217,7 +216,7 @@ public class Camera extends JComponent {
         ScreenPolygon shape = new ScreenPolygon(slicedSurface.getColor());
 
         for (Point3D point3D : slicedSurface.getPoints()) {
-            Point screenPoint = PerspectiveMath.calcPointPerspective(point3D, getCameraPoint3D(), getSize(), fov);
+            Point screenPoint = PerspectiveMath.calcPointPerspective(point3D, getCameraPoint3D(), getSize(), fovFactor);
             shape.addPoint(screenPoint.x, screenPoint.y);
         }
 
@@ -249,7 +248,7 @@ public class Camera extends JComponent {
 
         Camera other = (Camera)obj;
 
-        if (other.space.equals(space) && (other.fov == fov) &&
+        if (other.space.equals(space) && (other.fovFactor == fovFactor) &&
                 (other.x == x) && (other.y == y) && (other.z == z) &&
                 (other.yaw == yaw) && (other.pitch == pitch) && (other.roll == roll)) {
             return true;
@@ -260,7 +259,7 @@ public class Camera extends JComponent {
 
     @Override
     public String toString() {
-        return "Camera[x=" + x + ",y=" + y + ",z=" + z + ",yaw=" + yaw + ",pitch=" + pitch + ",roll=" + roll + ",fov=" + fov + "]";
+        return "Camera[x=" + x + ",y=" + y + ",z=" + z + ",yaw=" + yaw + ",pitch=" + pitch + ",roll=" + roll + ",fov factor=" + fovFactor + "]";
     }
 
     /**

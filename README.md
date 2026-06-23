@@ -21,7 +21,7 @@ The model adding system reads from directories in the src/resources/models folde
 [x] [y] [z] // specify relative coordinates of second vertex using floats
 ... // repeat for all vertices of surface
 ```
-You can also include other model files in a model file using semicolons. These files must be in the same folder as the .main file and have the .txt file extension. Include other files like so:
+You can also include other model files in a .main file using semicolons. These files must be in the same folder as the .main file and have the .txt file extension. Include other files like so:
 ```
 ;[model file name]; [scale factor]* // specify model file to include (without ".txt") *scale factor float optional
 [x] [y] [z] // specify relative location of included model using floats
@@ -34,8 +34,8 @@ The model adder will treat any non numeric characters the same as spaces (unless
 
 Movement:
 - W: move forward 0.35 units
-- S: move backward 0.35 units
 - A: move left 0.35 units
+- S: move backward 0.35 units
 - D: move right 0.35 units
 - Space: move up 0.35 units
 - Z: move down 0.35 units
@@ -51,6 +51,8 @@ Rotation:
 - C: roll right 1/64th of a full rotation
 
 Misc:
+- H: decrease field of view
+- J: increase field of view
 - N: begin the prompt to add a model from the models folder to the environment
 - I: print camera info to the console
 - M: scale the most recently placed model by 1.1x its size (temporary testing feature)

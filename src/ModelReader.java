@@ -2,7 +2,6 @@ import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -164,121 +163,114 @@ public class ModelReader {
 				Scanner scnr = new Scanner(fileInputStream);) {
 			// try to create an object based on color and coordinate information from the
 			// files
-			try {
-				// read through the file
-				while (scnr.hasNextLine()) {
-					String firstLine;
+			// read through the file
+			while (scnr.hasNextLine()) {
+				String firstLine;
 
-					do {
-						firstLine = scnr.nextLine();
-					} while (!firstLine.contains(FILE_INCLUDE_CHAR) && firstLine.replaceAll(REGEX, "").isBlank() && scnr.hasNextLine());
+				do {
+					firstLine = scnr.nextLine();
+				} while (!firstLine.contains(FILE_INCLUDE_CHAR) && firstLine.replaceAll(REGEX, "").isBlank() && scnr.hasNextLine());
 
-					if (firstLine.contains(FILE_INCLUDE_CHAR)) {
-						String directoryPath = f.getParent() + "/" + firstLine.substring(firstLine.indexOf(FILE_INCLUDE_CHAR) + 1, firstLine.lastIndexOf(FILE_INCLUDE_CHAR));
-						String filePath = directoryPath + SECONDARY_FILE_EXTENSION;
+				if (firstLine.contains(FILE_INCLUDE_CHAR)) {
+					String directoryPath = f.getParent() + "/" + firstLine.substring(firstLine.indexOf(FILE_INCLUDE_CHAR) + 1, firstLine.lastIndexOf(FILE_INCLUDE_CHAR));
+					String filePath = directoryPath + SECONDARY_FILE_EXTENSION;
 
-						File directoryToInclude = new File(directoryPath);
-						File fileToInclude = new File(filePath);
+					File directoryToInclude = new File(directoryPath);
+					File fileToInclude = new File(filePath);
 
-						if (!directoryToInclude.exists()) {
-							if (!fileToInclude.exists()) {
-								throw new FileNotFoundException("Could not find file " + fileToInclude);
-							}
+					if (!directoryToInclude.exists()) {
+						if (!fileToInclude.exists()) {
+							throw new FileNotFoundException("Could not find file " + fileToInclude);
 						}
-						else {
-							fileToInclude = directoryToInclude;
-						}
-
-						if (fileChain.contains(fileToInclude)) {
-							throw new Exception("Model file cannot include itself or other files that include it");
-						}
-
-						fileChain.add(fileToInclude);
-						Model modelToInclude = readModel(fileChain);
-						fileChain.removeLast();
-
-						String scaleString = firstLine.substring(firstLine.lastIndexOf(FILE_INCLUDE_CHAR)).replaceAll(REGEX, " ");
-						
-						if (!scaleString.isBlank()) {
-							double scale = Double.parseDouble(scaleString);
-							modelToInclude.scale(scale);
-						}
-						
-						String[] pos = scnr.nextLine().replaceAll(REGEX, " ").trim().split(REGEX, DIMENSIONS);
-						
-						double x = Double.parseDouble(pos[0]);
-						double y = Double.parseDouble(pos[1]);
-						double z = Double.parseDouble(pos[2]);
-
-						modelToInclude.moveTo(x, y, z);
-						model.addModel(modelToInclude);
-						continue;
+					}
+					else {
+						fileToInclude = directoryToInclude;
 					}
 
-					// this accounts for if the very last line is blank
-					if (firstLine.replaceAll(REGEX, "").isBlank()) {
+					if (fileChain.contains(fileToInclude)) {
+						throw new Exception("Model file cannot include itself or other files that include it");
+					}
+
+					fileChain.add(fileToInclude);
+					Model modelToInclude = readModel(fileChain);
+					fileChain.removeLast();
+
+					String scaleString = firstLine.substring(firstLine.lastIndexOf(FILE_INCLUDE_CHAR)).replaceAll(REGEX, " ");
+					
+					if (!scaleString.isBlank()) {
+						double scale = Double.parseDouble(scaleString);
+						modelToInclude.scale(scale);
+					}
+						
+					String[] pos = scnr.nextLine().replaceAll(REGEX, " ").trim().split(REGEX, DIMENSIONS);
+						
+					double x = Double.parseDouble(pos[0]);
+					double y = Double.parseDouble(pos[1]);
+					double z = Double.parseDouble(pos[2]);
+
+					modelToInclude.moveTo(x, y, z);
+					model.addModel(modelToInclude);
+					continue;
+				}
+
+				// this accounts for if the very last line is blank
+				if (firstLine.replaceAll(REGEX, "").isBlank()) {
+					break;
+				}
+
+				String[] colorInfo = firstLine.replaceAll(REGEX, " ").trim().split(REGEX, 4);
+
+				int r = Integer.parseInt(colorInfo[0]);
+				int g = Integer.parseInt(colorInfo[1]);
+				int b = Integer.parseInt(colorInfo[2]);
+				int a = DEFAULT_TRANSPARENCY;
+
+				// attempt to find an alpha value, use default transparency if one was not written
+				try {
+					a = Integer.parseInt(colorInfo[3]);
+				}
+				catch (ArrayIndexOutOfBoundsException e) {
+				}
+
+				Surface surface = new Surface(new Color(r, g, b, a));
+
+				while (scnr.hasNextLine()) {
+					String pointLine = scnr.nextLine();
+
+					if (pointLine.replaceAll(REGEX, "").isBlank()) {
 						break;
 					}
+		
+					String[] pos = pointLine.replaceAll(REGEX, " ").trim().split(REGEX, DIMENSIONS);
+					
+					double x = Double.parseDouble(pos[0]);
+					double y = Double.parseDouble(pos[1]);
+					double z = Double.parseDouble(pos[2]);
 
-					String[] colorInfo = firstLine.replaceAll(REGEX, " ").trim().split(REGEX, 4);
-
-					int r = Integer.parseInt(colorInfo[0]);
-					int g = Integer.parseInt(colorInfo[1]);
-					int b = Integer.parseInt(colorInfo[2]);
-					int a = DEFAULT_TRANSPARENCY;
-
-					// attempt to find an alpha value, use default transparency if one was not written
-					try {
-						a = Integer.parseInt(colorInfo[3]);
-					}
-					catch (ArrayIndexOutOfBoundsException e) {
-					}
-
-					Surface surface = new Surface(new Color(r, g, b, a));
-
-					while (scnr.hasNextLine()) {
-						String pointLine = scnr.nextLine();
-
-						if (pointLine.replaceAll(REGEX, "").isBlank()) {
-							break;
-						}
-
-						String[] pos = pointLine.replaceAll(REGEX, " ").trim().split(REGEX, DIMENSIONS);
-						
-						double x = Double.parseDouble(pos[0]);
-						double y = Double.parseDouble(pos[1]);
-						double z = Double.parseDouble(pos[2]);
-						surface.addPoint(new Point3D(x, y, z));
-					}
-
-					if (surface.getPoints().size() == 0) {
-						throw new Exception("No points in surface read from .txt file");
-					}
-
-					model.addSurface(surface);
+					surface.addPoint(new Point3D(x, y, z));
 				}
 
-				if (model.getSurfaces().size() == 0) {
-					JOptionPane.showMessageDialog(null, "No surfaces read from .txt file",
-					"Error", JOptionPane.ERROR_MESSAGE);
-					return null;
+				if (surface.getPoints().size() == 0) {
+					throw new Exception("No points in surface read from .txt file");
 				}
+
+				model.addSurface(surface);
 			}
-			catch (Exception e) {
-				e.printStackTrace();
 
-				if (fileChain.getLast().equals(ERROR_FILE)) {
-					return null;
-				}
-				
-				return readModel(ERROR_FILE);
+			if (model.getSurfaces().size() == 0) {
+				JOptionPane.showMessageDialog(null, "No surfaces read from .txt file",
+				"Error", JOptionPane.ERROR_MESSAGE);
+				return null;
 			}
 		}
-		catch (IOException e) {
+		catch (Exception e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "IOException occurred",
-					"Error", JOptionPane.ERROR_MESSAGE);
-			return null;
+
+			if (fileChain.getLast().equals(ERROR_FILE)) {
+				return null;
+			}
+				
+			return readModel(ERROR_FILE);
 		}
 
 		return model;
