@@ -138,7 +138,6 @@ public class Camera extends JComponent {
 
     // TODO: make a method that moves the camera fully camera relative
 
-
     // TODO: make sure the fields wrap between 0 and 2 * PI in the future
 
     /**

@@ -67,6 +67,15 @@ public class Surface {
 		}
 	}
 
+	public void scale(double scaleFactor, Point3D scalePoint) {
+		ArrayList<Point3D> newPoints = new ArrayList<Point3D>();
+		for (Point3D p : points) {
+			Point3D dist = p.difference(scalePoint);
+			newPoints.add(scalePoint.sum(dist.scale(scaleFactor)));
+		}
+		points = newPoints;
+	}
+
 	public Color getColor() {
 		return color;
 	}

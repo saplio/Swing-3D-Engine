@@ -89,7 +89,11 @@ public class Model {
 		surfaces = newSurfaces;
 	}
 
-	// TODO: add scale method
+	public void scale(double scaleFactor) {
+		for (Surface s : surfaces) {
+			s.scale(scaleFactor, location);
+		}
+	}
 
 	@Override
 	public boolean equals(Object obj) {

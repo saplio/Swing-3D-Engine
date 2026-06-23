@@ -29,8 +29,11 @@ public class ModelReader {
 	public static final int DEFAULT_TRANSPARENCY = 255;
 	public static final int DIMENSIONS = 3;
 
-	// TODO: polish comments and reorganize code
-
+	/**
+	 * Prompt the user to choose a model directory from the models folder.
+	 * 
+	 * @return {@code File} object of the chosen model folder, or {@code null} if the prompt was canceled
+	 */
 	public static File promptUserForModel() {
 		File modelFiles = new File(MODELS_PATH); // get directory where model files should be located
 
@@ -71,9 +74,12 @@ public class ModelReader {
 
 		return new File(MODELS_PATH + selection);
 	}
-
-	// TODO: make use of this method
-
+	
+	/**
+	 * Prompt the user to enter a float to scale models.
+	 * 
+	 * @return The user's entered float, or the default scale if the prompt was canceled or left blank
+	 */
 	public static double promptUserForScale() {
 		double scale = DEFAULT_SCALE;
 
@@ -107,6 +113,12 @@ public class ModelReader {
 		return scale;
 	}
 
+	/**
+	 * Attempt to read a model from the given file.
+	 * 
+	 * @param f File or directory to read from
+	 * @return The {@code Model} read, the error model if a model could not properly be read from the file, or {@code null}
+	 */
 	public static Model readModel(File f) {
 		ArrayList<File> fileList = new ArrayList<File>();
 		fileList.add(f);
@@ -185,7 +197,13 @@ public class ModelReader {
 						Model modelToInclude = readModel(fileChain);
 						fileChain.removeLast();
 
-						// TODO: allow for control of included model scale in file
+						String scaleString = firstLine.substring(firstLine.lastIndexOf(FILE_INCLUDE_CHAR)).replaceAll(REGEX, " ");
+						
+						if (!scaleString.isBlank()) {
+							double scale = Double.parseDouble(scaleString);
+							modelToInclude.scale(scale);
+						}
+						
 						String[] pos = scnr.nextLine().replaceAll(REGEX, " ").trim().split(REGEX, DIMENSIONS);
 						
 						double x = Double.parseDouble(pos[0]);
@@ -265,5 +283,4 @@ public class ModelReader {
 
 		return model;
 	}
-	
 }

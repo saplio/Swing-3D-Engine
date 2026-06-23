@@ -53,7 +53,11 @@ public class Point3D {
     }
 
     public Point3D difference(Point3D p) {
-        return new Point3D(x - p.x, y- p.y, z - p.z);
+        return new Point3D(x - p.x, y - p.y, z - p.z);
+    }
+
+    public Point3D scale(double scaleFactor) {
+        return new Point3D(x * scaleFactor, y * scaleFactor, z * scaleFactor);
     }
 
     @Override

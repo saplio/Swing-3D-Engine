@@ -71,9 +71,17 @@ public class Space {
         return Collections.unmodifiableList(cameras);
     }
 
-    // FIXME: temporary method for testing
+    // FIXME: temporary methods for testing
     public void moveLastModel() {
         models.getLast().moveBy(0, 1, 0);
+
+        for (Camera c : cameras) {
+            c.refresh();
+        }
+    }
+
+    public void scaleLastModel() {
+        models.getLast().scale(1.1);
 
         for (Camera c : cameras) {
             c.refresh();

@@ -8,16 +8,16 @@ import java.awt.event.KeyEvent;
 public class CameraController extends KeyAdapter {
 
 	public static final double RIGHT_PLACEMENT = 0;
-	public static final double FORWARD_PLACEMENT = 2;
+	public static final double FORWARD_PLACEMENT = 3;
 	public static final double UP_PLACEMENT = 0;
 
 	private Camera camera;
 	
-	public CameraController (Camera c) {
+	public CameraController(Camera c) {
 		camera = c;
 	}
 
-	// move the player depending on the key they pressed, or add an object to the program
+	// perform an action with the camera depending on the key pressed
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyChar() == 'd') {
@@ -43,6 +43,7 @@ public class CameraController extends KeyAdapter {
 			Point3D p = PerspectiveMath.cameraRelativeToOrthogonalXY(RIGHT_PLACEMENT, FORWARD_PLACEMENT, UP_PLACEMENT, camera.getYaw()).sum(camera.getCameraPoint3D());
 
 			if (!(m == null)) {
+				m.scale(ModelReader.promptUserForScale());
 				m.moveTo(p.x, p.y, p.z);
 				m.rotateXY(camera.getYaw());
 				camera.getSpace().addModel(m);
@@ -84,7 +85,8 @@ public class CameraController extends KeyAdapter {
 			System.out.println("Amount of surfaces: " + s);
 		}
 		else if (e.getKeyChar() == 'm') {
-			camera.getSpace().moveLastModel();
+			// camera.getSpace().moveLastModel();
+			camera.getSpace().scaleLastModel();
 		}
 	}
 }
