@@ -1,0 +1,18 @@
+;flat octagon;
+0 0 0
+;tilted octagon;
+2 0 0
+;flat octagon;
+4 0 0
+;tilted octagon;
+6 0 0
+;flat octagon;
+8 0 0
+;tilted octagon;
+10 0 0
+;flat octagon;
+12 0 0
+;tilted octagon;
+14 0 0
+;flat octagon;
+16 0 0

@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -16,110 +17,217 @@ import javax.swing.JOptionPane;
 public class ModelReader {
 
 	public static final String MODELS_PATH = "src/resources/models/";
-	public static final String FILE_EXTENSION = ".txt";
-	public static final String ERROR_FILE = "error";
-	public static final String REGEX = "(?:[^\\d.-]|-(?=\\D)|\\.(?=\\D))+";
+	public static final String MAIN_FILE_EXTENSION = ".main";
+	public static final String SECONDARY_FILE_EXTENSION = ".txt";
+
+	public static final File ERROR_FILE = new File(MODELS_PATH + "error");
+
+	public static final String REGEX = "(?:[^\\d.-]|-(?=\\.\\D)|\\.(?=\\D))+";
+	public static final String FILE_INCLUDE_CHAR = ";";
 
 	public static final double DEFAULT_SCALE = 1;
 	public static final int DEFAULT_TRANSPARENCY = 255;
 	public static final int DIMENSIONS = 3;
-	public static final double PLACEMENT_DIST_FORWARD = 2;
-	public static final double PLACEMENT_DIST_RIGHT = 0;
-	public static final double PLACEMENT_DIST_UP = 0;
 
-	// TODO: change these methods to be called promptUserForModel and make a different readModel method that takes a File as an argument
-	// this would remove make the code more organized and remove the need for an "error" parameter
+	/**
+	 * Prompt the user to choose a model directory from the models folder.
+	 * 
+	 * @return {@code File} object of the chosen model folder, or {@code null} if the prompt was canceled
+	 */
+	public static File promptUserForModel() {
+		File modelFiles = new File(MODELS_PATH); // get directory where model files should be located
 
-	public static void promptUserForModel(Space space, Camera camera) {
-		promptUserForModel(space, camera, false);
-	}
+		if (!modelFiles.isDirectory()) {
+			JOptionPane.showMessageDialog(null, "Could not find directory " + MODELS_PATH, "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return null;
+		}
 
-	public static void promptUserForModel(Space space, Camera camera, boolean error) {
-		String selection = ERROR_FILE; // stores the chosen object to add
-		double scale = DEFAULT_SCALE; // stores the chosen scaling factor of object (defaults to 1)
-
-		if (!error) {
-			File projectFile = new File(MODELS_PATH); // get directory path where object files should be located
-
-			// get list of files in the project folder and filter out all files that are not
-			// text files
-			ArrayList<String> options = new ArrayList<String>();
-			for (File f : projectFile.listFiles()) {
-				if (f.getName().endsWith(FILE_EXTENSION)) {
-					options.add(f.getName().replace(FILE_EXTENSION, ""));
-				}
-			}
-			// exit the method if no text files are available
-			if (options.size() == 0) {
-				JOptionPane.showMessageDialog(null, "There are no available object files to use", "Error",
-						JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-
-			// prompt user to choose an object to add
-			selection = (String) JOptionPane.showInputDialog(null, "Choose an object to add:",
-					"Add an Object", JOptionPane.PLAIN_MESSAGE, null, options.toArray(), options.get(0));
-
-			// exit method if the user presses X or cancel on the window
-			if (selection == null) {
-				return;
-			}
-
-			// prompt the user for the scaling factor of the object, trying again if the
-			// input is invalid
-			String errorMessage = "";
-			while (true) {
-				String strScale = JOptionPane.showInputDialog(null,
-						errorMessage + "Choose scaling factor of object:\n(will set to default if left blank)",
-						"Set Scale", JOptionPane.PLAIN_MESSAGE);
-
-				// exit method if the user presses X or cancel on the window
-				if (strScale == null) {
-					return;
-				}
-
-				// check if the user entered a valid double or left the prompt blank, add an
-				// error message to the next
-				// instance of the prompt if not
-				try {
-					if (!strScale.isBlank()) {
-						scale = Double.parseDouble(strScale);
+		// get list of files in the project folder and add only directories that contain a valid main file
+		// to the options
+		ArrayList<String> options = new ArrayList<String>();
+		for (File modelFolder : modelFiles.listFiles()) {
+			if (modelFolder.isDirectory()) {
+				for (File f : modelFolder.listFiles()) {
+					if (f.getName().endsWith(MAIN_FILE_EXTENSION)) {
+						options.add(modelFolder.getName());
+						break;
 					}
-					break;
-				}
-				catch (NumberFormatException e) {
-					errorMessage = "Invalid input! Try again:\n";
 				}
 			}
 		}
+		// exit the method if no text files are available
+		if (options.size() == 0) {
+			JOptionPane.showMessageDialog(null, "There are no available object files to use", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return null;
+		}
 
-		// begin reading from file of chosen object
-		try (FileInputStream fileInputStream = new FileInputStream(MODELS_PATH + selection + FILE_EXTENSION);
+		// prompt user to choose an object to add
+		String selection = (String) JOptionPane.showInputDialog(null, "Choose an object to add:",
+				"Add an Object", JOptionPane.PLAIN_MESSAGE, null, options.toArray(), options.get(0));
+
+		// exit method if the user presses X or cancel on the window
+		if (selection == null) {
+			return null;
+		}
+
+		return new File(MODELS_PATH + selection);
+	}
+	
+	/**
+	 * Prompt the user to enter a float to scale models.
+	 * 
+	 * @return The user's entered float, or the default scale if the prompt was canceled or left blank
+	 */
+	public static double promptUserForScale() {
+		double scale = DEFAULT_SCALE;
+
+		// prompt the user for the scaling factor of the object, trying again if the
+		// input is invalid
+		String errorMessage = "";
+		while (true) {
+			String strScale = JOptionPane.showInputDialog(null,
+					errorMessage + "Choose scaling factor of object:\n(will set to default if left blank)",
+					"Set Scale", JOptionPane.PLAIN_MESSAGE);
+
+			// exit method if the user presses X or cancel on the window
+			if (strScale == null) {
+				return scale;
+			}
+
+			// check if the user entered a valid double or left the prompt blank, add an
+			// error message to the next
+			// instance of the prompt if not
+			try {
+				if (!strScale.isBlank()) {
+					scale = Double.parseDouble(strScale);
+				}
+				break;
+			}
+			catch (NumberFormatException e) {
+				errorMessage = "Invalid input! Try again:\n";
+			}
+		}
+
+		return scale;
+	}
+
+	/**
+	 * Attempt to read a model from the given file.
+	 * 
+	 * @param f File or directory to read from
+	 * @return The {@code Model} read, the error model if a model could not properly be read from the file, or {@code null}
+	 */
+	public static Model readModel(File f) {
+		ArrayList<File> fileList = new ArrayList<File>();
+		fileList.add(f);
+		return readModel(fileList);
+	}
+
+	// This private method exists to make sure an object file can't include itself indirectly
+
+	private static Model readModel(ArrayList<File> fileChain) {
+		File f = fileChain.getLast();
+
+		// return null if null was passed to this method via the promptUserForScale method
+		if (f == null) {
+			return null;
+		}
+
+		// find the main file in the directory if the File is a directory
+		if (f.isDirectory()) {
+			boolean containsMain = false;
+			for (File innerFile : f.listFiles()) {
+				containsMain = true;
+				if (innerFile.getName().endsWith(MAIN_FILE_EXTENSION)) {
+					f = innerFile;
+					break;
+				}
+				containsMain = false;
+			}
+			
+			if (!containsMain) {
+				new Exception("Could not find " + MAIN_FILE_EXTENSION + " file").printStackTrace();
+
+				if (fileChain.getLast().equals(ERROR_FILE)) {
+					return null;
+				}
+
+				return readModel(ERROR_FILE);
+			}
+		}
+
+		Model model = new Model();
+
+		try (FileInputStream fileInputStream = new FileInputStream(f.getPath());
 				Scanner scnr = new Scanner(fileInputStream);) {
 			// try to create an object based on color and coordinate information from the
 			// files
-			// if the file is formatted incorrectly a placeholder will be created instead
 			try {
-				ArrayList<Surface> surfaces = new ArrayList<Surface>();
-				// iterate through each surface described in the text file
+				// read through the file
 				while (scnr.hasNextLine()) {
-					String colorLine;
+					String firstLine;
 
 					do {
-						colorLine = scnr.nextLine();
-					} while (colorLine.replaceAll(REGEX, "").isBlank() && scnr.hasNextLine());
+						firstLine = scnr.nextLine();
+					} while (!firstLine.contains(FILE_INCLUDE_CHAR) && firstLine.replaceAll(REGEX, "").isBlank() && scnr.hasNextLine());
 
-					if (colorLine.replaceAll(REGEX, "").isBlank()) {
+					if (firstLine.contains(FILE_INCLUDE_CHAR)) {
+						String directoryPath = f.getParent() + "/" + firstLine.substring(firstLine.indexOf(FILE_INCLUDE_CHAR) + 1, firstLine.lastIndexOf(FILE_INCLUDE_CHAR));
+						String filePath = directoryPath + SECONDARY_FILE_EXTENSION;
+
+						File directoryToInclude = new File(directoryPath);
+						File fileToInclude = new File(filePath);
+
+						if (!directoryToInclude.exists()) {
+							if (!fileToInclude.exists()) {
+								throw new FileNotFoundException("Could not find file " + fileToInclude);
+							}
+						}
+						else {
+							fileToInclude = directoryToInclude;
+						}
+
+						if (fileChain.contains(fileToInclude)) {
+							throw new Exception("Model file cannot include itself or other files that include it");
+						}
+
+						fileChain.add(fileToInclude);
+						Model modelToInclude = readModel(fileChain);
+						fileChain.removeLast();
+
+						String scaleString = firstLine.substring(firstLine.lastIndexOf(FILE_INCLUDE_CHAR)).replaceAll(REGEX, " ");
+						
+						if (!scaleString.isBlank()) {
+							double scale = Double.parseDouble(scaleString);
+							modelToInclude.scale(scale);
+						}
+						
+						String[] pos = scnr.nextLine().replaceAll(REGEX, " ").trim().split(REGEX, DIMENSIONS);
+						
+						double x = Double.parseDouble(pos[0]);
+						double y = Double.parseDouble(pos[1]);
+						double z = Double.parseDouble(pos[2]);
+
+						modelToInclude.moveTo(x, y, z);
+						model.addModel(modelToInclude);
+						continue;
+					}
+
+					// this accounts for if the very last line is blank
+					if (firstLine.replaceAll(REGEX, "").isBlank()) {
 						break;
 					}
 
-					String[] colorInfo = colorLine.replaceAll(REGEX, " ").trim().split(REGEX, 4);
+					String[] colorInfo = firstLine.replaceAll(REGEX, " ").trim().split(REGEX, 4);
 
 					int r = Integer.parseInt(colorInfo[0]);
 					int g = Integer.parseInt(colorInfo[1]);
 					int b = Integer.parseInt(colorInfo[2]);
 					int a = DEFAULT_TRANSPARENCY;
 
+					// attempt to find an alpha value, use default transparency if one was not written
 					try {
 						a = Integer.parseInt(colorInfo[3]);
 					}
@@ -136,18 +244,10 @@ public class ModelReader {
 						}
 
 						String[] pos = pointLine.replaceAll(REGEX, " ").trim().split(REGEX, DIMENSIONS);
-
-						Point3D orthogonalPlacementDist = PerspectiveMath.cameraRelativeToOrthogonalXY(
-								PLACEMENT_DIST_RIGHT, PLACEMENT_DIST_FORWARD, PLACEMENT_DIST_UP, camera.getYaw());
 						
-						// this line of code treats the coordinate information as camera relative,
-						// making the orientation of the model depend on the camera yaw
-						Point3D placementCoords = PerspectiveMath.cameraRelativeToOrthogonalXY(
-								(Double.parseDouble(pos[0]) * scale), (Double.parseDouble(pos[1]) * scale), (Double.parseDouble(pos[2]) * scale), camera.getYaw());
-
-						double x = camera.getXPos() + placementCoords.x + orthogonalPlacementDist.x;
-						double y = camera.getYPos() + placementCoords.y + orthogonalPlacementDist.y;
-						double z = camera.getZPos() + placementCoords.z + orthogonalPlacementDist.z;
+						double x = Double.parseDouble(pos[0]);
+						double y = Double.parseDouble(pos[1]);
+						double z = Double.parseDouble(pos[2]);
 						surface.addPoint(new Point3D(x, y, z));
 					}
 
@@ -155,46 +255,32 @@ public class ModelReader {
 						throw new Exception("No points in surface read from .txt file");
 					}
 
-					surfaces.add(surface);
+					model.addSurface(surface);
 				}
 
-
-				if (surfaces.size() == 0) {
+				if (model.getSurfaces().size() == 0) {
 					JOptionPane.showMessageDialog(null, "No surfaces read from .txt file",
 					"Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-
-				// add surfaces after scanning all of them so that no surfaces get placed if an
-				// error occurs in scanning
-				for (Surface s : surfaces) {
-					space.addSurface(s);
+					return null;
 				}
 			}
 			catch (Exception e) {
-				// if something went wrong with the file scanning, create a placeholder object
-				// instead
-				// FIXME: add some sort of check to prevent a loop if the error model has been tampered with
-				promptUserForModel(space, camera, true);
 				e.printStackTrace();
-			}
 
-			// close scanner
-			scnr.close();
+				if (fileChain.getLast().equals(ERROR_FILE)) {
+					return null;
+				}
+				
+				return readModel(ERROR_FILE);
+			}
 		}
 		catch (IOException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "IOException occurred",
 					"Error", JOptionPane.ERROR_MESSAGE);
-
+			return null;
 		}
-	}
 
-	// TODO: eventually make this return a "Model" object rather than an ArrayList of surfaces
-
-	public ArrayList<Surface> readModel(File f) {
-		// TODO: add content
-		return null;
+		return model;
 	}
-	
 }

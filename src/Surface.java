@@ -38,12 +38,42 @@ public class Surface {
 	}
 
 	public boolean addPoint(Point3D point) {
+		if (point == null) {
+			return false;
+		}
+
 		if (points.size() == 0 || !(points.getLast().equals(point))) {
 			points.add(point);
 			return true;
 		}
 
 		return false;
+	}
+
+	public Point3D getLocationPoint3D() {
+		return new Point3D(points.getFirst());
+	}
+
+	public void moveTo(double x, double y, double z) {
+		Point3D movement = new Point3D(x, y, z).difference(getLocationPoint3D());
+		for (Point3D p : points) {
+			p.moveBy(movement.x, movement.y, movement.z);
+		}
+	}
+
+	public void moveBy(double x, double y, double z) {
+		for (Point3D p : points) {
+			p.moveBy(x, y, z);
+		}
+	}
+
+	public void scale(double scaleFactor, Point3D scalePoint) {
+		ArrayList<Point3D> newPoints = new ArrayList<Point3D>();
+		for (Point3D p : points) {
+			Point3D dist = p.difference(scalePoint);
+			newPoints.add(scalePoint.sum(dist.scale(scaleFactor)));
+		}
+		points = newPoints;
 	}
 
 	public Color getColor() {

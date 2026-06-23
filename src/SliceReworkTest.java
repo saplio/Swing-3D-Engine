@@ -40,6 +40,6 @@ public class SliceReworkTest {
         camera.refresh();
 
         // add keyboard control
-        frame.addKeyListener(new Keyboard(camera));
+        frame.addKeyListener(new CameraController(camera));
     }
 }
