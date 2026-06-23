@@ -20,7 +20,7 @@ public class Main {
 		
 		// create two cameras in the same space
 		createDisplay(space, new Point(100, 200));
-        createDisplay(space, new Point( 700, 200));
+        createDisplay(space, new Point(700, 200));
 	}
 
 	public static void createDisplay(Space space, Point pos) {
