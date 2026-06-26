@@ -60,6 +60,10 @@ public class Point3D {
         return new Point3D(x * scaleFactor, y * scaleFactor, z * scaleFactor);
     }
 
+    public Point3D negative() {
+        return new Point3D(-x, -y, -z);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Point3D)) {

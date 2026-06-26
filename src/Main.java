@@ -32,7 +32,7 @@ public class Main {
         frame.setLocation(pos);
 
         // add camera to container
-        Camera camera = space.createCamera();
+        Camera camera = space.createSmoothCamera();
         frame.add(camera);
         frame.setVisible(true);
         camera.moveTo(0, 0, 2);

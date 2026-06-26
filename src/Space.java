@@ -2,13 +2,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.Timer;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 /**
  * Class that acts as the actual 3D environment, storing all models in the environment
  */
 
 // TODO: make this class serializable
 
-public class Space {
+public class Space implements ActionListener {
+
+    public static final double REFRESH_RATE = 1.0 / 29800;
 
     private ArrayList<Model> models; // stores all Model objects
     private ArrayList<Camera> cameras; // stores all Camera objects
@@ -16,6 +23,9 @@ public class Space {
     public Space() {
         models = new ArrayList<Model>();
         cameras = new ArrayList<Camera>();
+
+        Timer timer = new Timer((int)(REFRESH_RATE * 1000), this);
+        timer.start();
     }
 
     public boolean addModel(Model model) {
@@ -24,10 +34,6 @@ public class Space {
         }
 
         models.add(model);
-        
-        for (Camera c : cameras) {
-            c.refresh();
-        }
 
         return true;
     }
@@ -45,10 +51,6 @@ public class Space {
 
         models.add(m);
 
-        for (Camera c : cameras) {
-            c.refresh();
-        }
-
         return true;
     }
 
@@ -63,6 +65,12 @@ public class Space {
         return camera;
     }
 
+    public SmoothCamera createSmoothCamera() {
+        SmoothCamera camera = new SmoothCamera(this);
+        cameras.add(camera);
+        return camera;
+    }
+
     public List<Model> getModels() {
         return Collections.unmodifiableList(models);
     }
@@ -71,21 +79,36 @@ public class Space {
         return Collections.unmodifiableList(cameras);
     }
 
+    public void updateCameraPositions() {
+        for (Camera c : cameras) {
+            if (c instanceof SmoothCamera smoothCamera) {
+                smoothCamera.updateVelocity();
+                smoothCamera.moveOrthogonal(smoothCamera.getVelocity().x, smoothCamera.getVelocity().y, smoothCamera.getVelocity().z);
+            }
+        }
+    }
+
+    public void refreshCameras() {
+        for (Camera c : cameras) {
+            if (c.isShowing()) {
+                c.refresh();
+            }
+        }
+    }
+
     // FIXME: temporary methods for testing
     public void moveLastModel() {
         models.getLast().moveBy(0, 1, 0);
-
-        for (Camera c : cameras) {
-            c.refresh();
-        }
     }
 
     public void scaleLastModel() {
         models.getLast().scale(1.1);
+    }
 
-        for (Camera c : cameras) {
-            c.refresh();
-        }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        updateCameraPositions();
+        refreshCameras();
     }
 
     @Override
