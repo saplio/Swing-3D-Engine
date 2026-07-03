@@ -12,9 +12,10 @@ public class Main {
 	public static void main(String[] args) {
 		// create space
 		Space space = new Space();
+        space.startTimer();
 		
 		// create a field of octagons
-		Model octagons = ModelReader.readModel(new File(ModelReader.MODELS_PATH + "octagon grid"));
+		Model octagons = ModelReader.readModel("octagon grid");
 		octagons.moveBy(-8.75, 2, 0);
 		space.addModel(octagons);
 		
@@ -32,12 +33,12 @@ public class Main {
         frame.setLocation(pos);
 
         // add camera to container
-        Camera camera = space.createSmoothCamera();
+        SmoothMovementCamera camera = space.createSmoothMovementCamera();
         frame.add(camera);
         frame.setVisible(true);
         camera.moveTo(0, 0, 2);
 
         // add keyboard control
-        frame.addKeyListener(new CameraController(camera));
+        frame.addKeyListener(new SmoothCameraController(camera));
     }
 }

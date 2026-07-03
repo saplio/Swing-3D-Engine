@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
-import java.io.File;
+
 import java.util.ArrayList;
 
 /**
@@ -17,6 +17,7 @@ public class Camera extends JComponent {
 
     public static final double DEFAULT_FOV_FACTOR = 400;
 
+    // TODO: replace with Point3D
     private double x;
     private double y;
     private double z;
@@ -185,7 +186,7 @@ public class Camera extends JComponent {
 
         for (Camera c : space.getCameras()) {
             if (!c.equals(this)) {
-                Model cameraCube = ModelReader.readModel(new File(ModelReader.MODELS_PATH + "camera"));
+                Model cameraCube = ModelReader.readModel("camera");
                 cameraCube.rotateLikeCameraBy(c.getYaw(), c.getPitch(), c.getRoll());
                 Point3D cameraPoint = c.getCameraPoint3D();
                 cameraCube.moveTo(cameraPoint.x, cameraPoint.y, cameraPoint.z);

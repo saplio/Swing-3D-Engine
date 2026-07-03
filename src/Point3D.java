@@ -36,6 +36,10 @@ public class Point3D {
         return z;
     }
 
+    public double getHypot() {
+        return Math.hypot(Math.hypot(x, y), z);
+    }
+
     public void moveTo(double x, double y, double z) {
         this.x = x;
         this.y = y;

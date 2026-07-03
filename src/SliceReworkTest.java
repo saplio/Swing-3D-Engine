@@ -7,6 +7,7 @@ public class SliceReworkTest {
     public static void main(String[] args) {
         // create space
         Space space = new Space();
+        space.startTimer();
 
         Surface surface;
         surface = new Surface(Color.RED);
@@ -36,6 +37,6 @@ public class SliceReworkTest {
         camera.refresh();
 
         // add keyboard control
-        frame.addKeyListener(new CameraController(camera));
+        frame.addKeyListener(new BasicCameraController(camera));
     }
 }

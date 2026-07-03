@@ -5,43 +5,50 @@ import java.awt.event.KeyEvent;
  * Class that extends the built in KeyAdapter class in order to detect keyboard input in the program frame
  */
 
-public class CameraController extends KeyAdapter {
+public class BasicCameraController extends KeyAdapter {
 
 	public static final double RIGHT_PLACEMENT = 0;
 	public static final double FORWARD_PLACEMENT = 3;
 	public static final double UP_PLACEMENT = 0;
 
+	public static final double DEFAULT_STEP_SIZE = 0.35;
+
 	private Camera camera;
+	private double stepSize;
 	
-	public CameraController(Camera c) {
+	public BasicCameraController(Camera c) {
 		camera = c;
+		stepSize = DEFAULT_STEP_SIZE;
+	}
+
+	public double getStepSize() {
+		return stepSize;
+	}
+
+	public void setStepSize(double newSize) {
+		stepSize = newSize;
 	}
 
 	// perform an action with the camera depending on the key pressed
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyChar() == 'd') {
-			if (camera instanceof SmoothCamera c) {
-				Point3D accel = PerspectiveMath.cameraRelativeToOrthogonalXY(0.03, 0, 0, c.getYaw());
-				c.setAcceleration(accel);
-			} else {
-				camera.moveCameraRelativeXY(0.35, 0 , 0);
-			}
+			camera.moveCameraRelativeXY(stepSize, 0 , 0);
 		}
 		else if (e.getKeyChar() == 'a') {
-			camera.moveCameraRelativeXY(-0.35, 0 , 0);
+			camera.moveCameraRelativeXY(-stepSize, 0 , 0);
 		}
 		else if (e.getKeyChar() == 'w') {
-			camera.moveCameraRelativeXY(0, 0.35 , 0);
+			camera.moveCameraRelativeXY(0, stepSize, 0);
 		}
 		else if (e.getKeyChar() == 's') {
-			camera.moveCameraRelativeXY(0, -0.35 , 0);
+			camera.moveCameraRelativeXY(0, -stepSize, 0);
 		}
 		else if (e.getKeyChar() == ' ') {
-			camera.moveCameraRelativeXY(0, 0 , 0.35);
+			camera.moveCameraRelativeXY(0, 0 , stepSize);
 		}
 		else if (e.getKeyChar() == 'z') {
-			camera.moveCameraRelativeXY(0, 0 , -0.35);
+			camera.moveCameraRelativeXY(0, 0 , -stepSize);
 		}
 		else if (e.getKeyChar() == 'n') {
 			Model m = ModelReader.readModel(ModelReader.promptUserForModel());
@@ -55,10 +62,10 @@ public class CameraController extends KeyAdapter {
 			}
 		}
 		else if (e.getKeyChar() == 'r') {
-			camera.moveCameraRelativeXY(5, 0, 0);
+			camera.moveCameraRelativeXY(stepSize * 20, 0, 0);
 		}
 		else if (e.getKeyChar() == 'l') {
-			camera.moveCameraRelativeXY(-5, 0, 0);
+			camera.moveCameraRelativeXY(-stepSize * 20, 0, 0);
 		}
 		else if (e.getKeyChar() == 'q') {
 			camera.rotate(Math.PI / 32, 0, 0);
@@ -94,19 +101,10 @@ public class CameraController extends KeyAdapter {
 			camera.getSpace().scaleLastModel();
 		}
 		else if (e.getKeyChar() == 'h') {
-			// camera.getSpace().moveLastModel();
 			camera.setFovFactor(camera.getFovFactor() + 10);
 		}
 		else if (e.getKeyChar() == 'j') {
-			// camera.getSpace().moveLastModel();
 			camera.setFovFactor(camera.getFovFactor() - 10);
-		}
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		if (camera instanceof SmoothCamera c) {
-			c.setAcceleration(c.getVelocity().negative().scale(0.05));
 		}
 	}
 }

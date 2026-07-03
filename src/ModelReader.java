@@ -113,6 +113,16 @@ public class ModelReader {
 	}
 
 	/**
+	 * Attempt to read a model from the given file name.
+	 * 
+	 * @param s Name of file or directory inside the models directory
+	 * @return The {@code Model} read, the error model if a model could not properly be read from the file, or {@code null}
+	 */
+	public static Model readModel(String s) {
+		return readModel(new File(MODELS_PATH + s));
+	}
+
+	/**
 	 * Attempt to read a model from the given file.
 	 * 
 	 * @param f File or directory to read from

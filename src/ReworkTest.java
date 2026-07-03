@@ -7,6 +7,7 @@ public class ReworkTest {
     public static void main(String[] args) {
         // create Space
         Space space = new Space();
+        space.startTimer();
 
         // add surfaces to space
         Surface surface;
@@ -43,6 +44,6 @@ public class ReworkTest {
         camera.refresh();
 
         // add keyboard control
-        frame.addKeyListener(new CameraController(camera));
+        frame.addKeyListener(new BasicCameraController(camera));
     }
 }

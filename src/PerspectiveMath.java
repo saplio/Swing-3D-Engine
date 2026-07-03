@@ -8,6 +8,9 @@ import java.util.List;
 
 public class PerspectiveMath {
 
+    private PerspectiveMath() {
+    }
+
     /**
      * Rotate a {@code Surface} on the XY plane.
      * 
@@ -248,6 +251,8 @@ public class PerspectiveMath {
         return new Point(x, y);
     }
 
+
+    // TODO: replace with Point3D
     /**
      * Convert camera relative position information to orthogonal position information. Currently Only does this along XY plane.
      * 
@@ -263,6 +268,14 @@ public class PerspectiveMath {
         double x = amtForward * Math.sin(-yaw) + amtRight * Math.sin(-yaw + Math.PI / 2);
 		double y = amtForward * Math.cos(-yaw) + amtRight * Math.cos(-yaw +  Math.PI / 2);
         return new Point3D(x, y, amtUp);
+    }
+
+    public static Point3D orthogonalToCameraRelativeXY(double x, double y, double z, double yaw) {
+        // TODO: make this a more general method that can account for all rotation
+
+        double amtRight = y * Math.sin(yaw) + x * Math.sin(yaw + Math.PI / 2);
+		double amtForward = y * Math.cos(yaw) + x * Math.cos(yaw +  Math.PI / 2);
+        return new Point3D(amtRight, amtForward, z);
     }
 
     // The following are perspective calculation equations which produce warped perspective.
