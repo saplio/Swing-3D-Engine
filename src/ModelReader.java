@@ -8,9 +8,7 @@ import java.util.Scanner;
 import javax.swing.JOptionPane;
 
 /**
- * This class has a static method used to allow the user
- * to add new objects to the space, reading from text files
- * in the project
+ * Class with static methods meant to read model files
  */
 
 public class ModelReader {
@@ -27,6 +25,9 @@ public class ModelReader {
 	public static final double DEFAULT_SCALE = 1;
 	public static final int DEFAULT_TRANSPARENCY = 255;
 	public static final int DIMENSIONS = 3;
+
+	private ModelReader() {
+	}
 
 	/**
 	 * Prompt the user to choose a model directory from the models folder.

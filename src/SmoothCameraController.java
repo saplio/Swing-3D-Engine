@@ -8,19 +8,16 @@ public class SmoothCameraController extends KeyAdapter {
 	public static final double UP_PLACEMENT = 0;
 
 	public static final double DEFAULT_ACCELERATION = 20;
-	public static final double DEFAULT_TOP_SPEED = 15;
 
-    private SmoothMovementCamera camera;
+    private TimeStepCamera camera;
 	private double acceleration;
-	private double topSpeed;
 
 	// TODO: use Key Bindings instead of a KeyAdapter
 
-    public SmoothCameraController(SmoothMovementCamera c) {
+    public SmoothCameraController(TimeStepCamera c) {
         camera = c;
 
 		acceleration = DEFAULT_ACCELERATION;
-		topSpeed = DEFAULT_TOP_SPEED;
     }
 
 	public double getAcceleration() {
@@ -31,49 +28,40 @@ public class SmoothCameraController extends KeyAdapter {
 		acceleration = a;
 	}
 
-	public double getTopSpeed() {
-		return topSpeed;
-	}
-
-	public void setTopSpeed(double t) {
-		topSpeed = t;
-	}
-
     // perform an action with the camera depending on the key pressed
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyChar() == 'd') {
-			Point3D cameraAccel = PerspectiveMath.cameraRelativeToOrthogonalXY(acceleration, 0, 0, camera.getYaw());
-			camera.setAcceleration(cameraAccel);
-		}
-		else if (e.getKeyChar() == 'a') {
-			Point3D cameraAccel = PerspectiveMath.cameraRelativeToOrthogonalXY(-acceleration, 0, 0, camera.getYaw());
-			camera.setAcceleration(cameraAccel);
-		}
-		else if (e.getKeyChar() == 'w') {
-			Point3D cameraAccel = PerspectiveMath.cameraRelativeToOrthogonalXY(0, acceleration, 0, camera.getYaw());
-			camera.setAcceleration(cameraAccel);
-		}
-		else if (e.getKeyChar() == 's') {
-			Point3D cameraAccel = PerspectiveMath.cameraRelativeToOrthogonalXY(0, -acceleration, 0, camera.getYaw());
-			camera.setAcceleration(cameraAccel);
-		}
-		else if (e.getKeyChar() == ' ') {
-			Point3D cameraAccel = PerspectiveMath.cameraRelativeToOrthogonalXY(0, 0, acceleration, camera.getYaw());
-			camera.setAcceleration(cameraAccel);
-		}
-		else if (e.getKeyChar() == 'z') {
-			Point3D cameraAccel = PerspectiveMath.cameraRelativeToOrthogonalXY(0, 0, -acceleration, camera.getYaw());
-			camera.setAcceleration(cameraAccel);
-		}
-
-		if (camera.getVelocity().getHypot() > topSpeed) {
-			camera.setAcceleration(new Point3D());
+		if ("daws z".contains(String.valueOf(e.getKeyChar()))) {
+			camera.setBeingMoved(true);
+			if (e.getKeyChar() == 'd') {
+				Point3D cameraAccel = PerspectiveMath.cameraRelativeToOrthogonalXY(new Point3D(acceleration, 0, 0), camera.getYaw());
+				camera.setAcceleration(cameraAccel);
+			}
+			else if (e.getKeyChar() == 'a') {
+				Point3D cameraAccel = PerspectiveMath.cameraRelativeToOrthogonalXY(new Point3D(-acceleration, 0, 0), camera.getYaw());
+				camera.setAcceleration(cameraAccel);
+			}
+			else if (e.getKeyChar() == 'w') {
+				Point3D cameraAccel = PerspectiveMath.cameraRelativeToOrthogonalXY(new Point3D(0, acceleration, 0), camera.getYaw());
+				camera.setAcceleration(cameraAccel);
+			}
+			else if (e.getKeyChar() == 's') {
+				Point3D cameraAccel = PerspectiveMath.cameraRelativeToOrthogonalXY(new Point3D(0, -acceleration, 0), camera.getYaw());
+				camera.setAcceleration(cameraAccel);
+			}
+			else if (e.getKeyChar() == ' ') {
+				Point3D cameraAccel = PerspectiveMath.cameraRelativeToOrthogonalXY(new Point3D(0, 0, acceleration), camera.getYaw());
+				camera.setAcceleration(cameraAccel);
+			}
+			else if (e.getKeyChar() == 'z') {
+				Point3D cameraAccel = PerspectiveMath.cameraRelativeToOrthogonalXY(new Point3D(0, 0, -acceleration), camera.getYaw());
+				camera.setAcceleration(cameraAccel);
+			}
 		}
 
 		if (e.getKeyChar() == 'n') {
 			Model m = ModelReader.readModel(ModelReader.promptUserForModel());
-			Point3D p = PerspectiveMath.cameraRelativeToOrthogonalXY(RIGHT_PLACEMENT, FORWARD_PLACEMENT, UP_PLACEMENT, camera.getYaw()).sum(camera.getCameraPoint3D());
+			Point3D p = PerspectiveMath.cameraRelativeToOrthogonalXY(new Point3D(RIGHT_PLACEMENT, FORWARD_PLACEMENT, UP_PLACEMENT), camera.getYaw()).sum(camera.getCameraLocation());
 
 			if (!(m == null)) {
 				m.scale(ModelReader.promptUserForScale());
@@ -112,7 +100,6 @@ public class SmoothCameraController extends KeyAdapter {
 			System.out.println("Amount of surfaces: " + s);
 		}
 		else if (e.getKeyChar() == 'm') {
-			// camera.getSpace().moveLastModel();
 			camera.getSpace().scaleLastModel();
 		}
 		else if (e.getKeyChar() == 'h') {
@@ -125,47 +112,6 @@ public class SmoothCameraController extends KeyAdapter {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if (e.getKeyChar() == 'd') {
-			Point3D acceleration = camera.getAcceleration();
-			acceleration = PerspectiveMath.orthogonalToCameraRelativeXY(acceleration.x, acceleration.y, acceleration.z, camera.getYaw());
-			acceleration.x = 0;
-			acceleration = PerspectiveMath.cameraRelativeToOrthogonalXY(acceleration.x, acceleration.y, acceleration.z, camera.getYaw());
-			camera.setAcceleration(camera.getAcceleration());
-		}
-		else if (e.getKeyChar() == 'a') {
-			Point3D acceleration = camera.getAcceleration();
-			acceleration = PerspectiveMath.orthogonalToCameraRelativeXY(acceleration.x, acceleration.y, acceleration.z, camera.getYaw());
-			acceleration.x = 0;
-			acceleration = PerspectiveMath.cameraRelativeToOrthogonalXY(acceleration.x, acceleration.y, acceleration.z, camera.getYaw());
-			camera.setAcceleration(camera.getAcceleration());
-		}
-		else if (e.getKeyChar() == 'w') {
-			Point3D acceleration = camera.getAcceleration();
-			acceleration = PerspectiveMath.orthogonalToCameraRelativeXY(acceleration.x, acceleration.y, acceleration.z, camera.getYaw());
-			acceleration.y = 0;
-			acceleration = PerspectiveMath.cameraRelativeToOrthogonalXY(acceleration.x, acceleration.y, acceleration.z, camera.getYaw());
-			camera.setAcceleration(camera.getAcceleration());
-		}
-		else if (e.getKeyChar() == 's') {
-			Point3D acceleration = camera.getAcceleration();
-			acceleration = PerspectiveMath.orthogonalToCameraRelativeXY(acceleration.x, acceleration.y, acceleration.z, camera.getYaw());
-			acceleration.x = 0;
-			acceleration = PerspectiveMath.cameraRelativeToOrthogonalXY(acceleration.x, acceleration.y, acceleration.z, camera.getYaw());
-			camera.setAcceleration(camera.getAcceleration());
-		}
-		else if (e.getKeyChar() == ' ') {
-			Point3D acceleration = camera.getAcceleration();
-			acceleration = PerspectiveMath.orthogonalToCameraRelativeXY(acceleration.x, acceleration.y, acceleration.z, camera.getYaw());
-			acceleration.z = 0;
-			acceleration = PerspectiveMath.cameraRelativeToOrthogonalXY(acceleration.x, acceleration.y, acceleration.z, camera.getYaw());
-			camera.setAcceleration(camera.getAcceleration());
-		}
-		else if (e.getKeyChar() == 'z') {
-			Point3D acceleration = camera.getAcceleration();
-			acceleration = PerspectiveMath.orthogonalToCameraRelativeXY(acceleration.x, acceleration.y, acceleration.z, camera.getYaw());
-			acceleration.z = 0;
-			acceleration = PerspectiveMath.cameraRelativeToOrthogonalXY(acceleration.x, acceleration.y, acceleration.z, camera.getYaw());
-			camera.setAcceleration(camera.getAcceleration());
-		}
+		camera.setBeingMoved(false);
 	}
 }

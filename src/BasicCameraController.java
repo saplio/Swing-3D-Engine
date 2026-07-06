@@ -52,7 +52,7 @@ public class BasicCameraController extends KeyAdapter {
 		}
 		else if (e.getKeyChar() == 'n') {
 			Model m = ModelReader.readModel(ModelReader.promptUserForModel());
-			Point3D p = PerspectiveMath.cameraRelativeToOrthogonalXY(RIGHT_PLACEMENT, FORWARD_PLACEMENT, UP_PLACEMENT, camera.getYaw()).sum(camera.getCameraPoint3D());
+			Point3D p = PerspectiveMath.cameraRelativeToOrthogonalXY(new Point3D(RIGHT_PLACEMENT, FORWARD_PLACEMENT, UP_PLACEMENT), camera.getYaw()).sum(camera.getCameraLocation());
 
 			if (!(m == null)) {
 				m.scale(ModelReader.promptUserForScale());
@@ -97,7 +97,6 @@ public class BasicCameraController extends KeyAdapter {
 			System.out.println("Amount of surfaces: " + s);
 		}
 		else if (e.getKeyChar() == 'm') {
-			// camera.getSpace().moveLastModel();
 			camera.getSpace().scaleLastModel();
 		}
 		else if (e.getKeyChar() == 'h') {

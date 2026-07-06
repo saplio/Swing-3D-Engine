@@ -16,18 +16,17 @@ import java.awt.event.ActionListener;
 public class Space implements ActionListener {
 
     public static final double REFRESH_RATE = 1.0 / 60.0;
-    public static final double DECELERATION = 4;
 
     private ArrayList<Model> models; // stores all Model objects
     private ArrayList<Camera> cameras; // stores all Camera objects
-    private ArrayList<SmoothMovementCamera> smoothMovementCameras; // stores specifically references to SmoothMovementCamera objects
+    private ArrayList<TimeStepCamera> timeStepCameras; // stores specifically references to SmoothMovementCamera objects
 
     private Timer timer;
 
     public Space() {
         models = new ArrayList<Model>();
         cameras = new ArrayList<Camera>();
-        smoothMovementCameras = new ArrayList<SmoothMovementCamera>();
+        timeStepCameras = new ArrayList<TimeStepCamera>();
 
         timer = new Timer((int)(REFRESH_RATE * 1000), this);
     }
@@ -48,8 +47,8 @@ public class Space implements ActionListener {
         return Collections.unmodifiableList(cameras);
     }
 
-    public List<SmoothMovementCamera> getSmoothMovementCameras() {
-        return Collections.unmodifiableList(smoothMovementCameras);
+    public List<TimeStepCamera> getTimeStepCameras() {
+        return Collections.unmodifiableList(timeStepCameras);
     }
 
     public boolean addModel(Model model) {
@@ -90,53 +89,26 @@ public class Space implements ActionListener {
     }
 
     /**
-     * Create a new {@code SmoothMovementCamera} object in this {@code Space}. 
+     * Create a new {@code TimeStepCamera} object in this {@code Space}. 
      * 
-     * @return {@code SmoothMovementCamera} initialized at the origin facing the positive Y axis
+     * @return {@code TimeStepCamera} initialized at the origin facing the positive Y axis
      */
-    public SmoothMovementCamera createSmoothMovementCamera() {
-        SmoothMovementCamera camera = new SmoothMovementCamera(this);
+    public TimeStepCamera createTimeStepCamera() {
+        TimeStepCamera camera = new TimeStepCamera(this);
         cameras.add(camera);
-        smoothMovementCameras.add(camera);
+        timeStepCameras.add(camera);
         return camera;
     }
 
-    private void updateCameraPositions() {
-        // TODO: could make an interface SmoothMovement that could be implemented by models as well and have them all updated by this method
-        // TODO: above should be done so that all movement is described in the interface's implementation rather than deceleration movement described in the space
-        // FIXME: this system causes some jitter at the moment
-        for (SmoothMovementCamera c : smoothMovementCameras) {
-                boolean isDecelerating = false;
-                // FIXME: top speed is not fully consistent
-                // FIXME: remove print statements
-                System.out.println(c.getAcceleration());
-                if (c.getAcceleration().equals(new Point3D()) && !c.getVelocity().equals(new Point3D())) {
-                    // set acceleration to have the magnitude of the deceleration constant in the opposite direction of the current speed
-                    c.setAcceleration(c.getVelocity().negative().scale(DECELERATION / c.getVelocity().getHypot()));  
-                    // System.out.println(c.getAcceleration().getHypot());
-                    isDecelerating = true;
-                }
-                // FIXME: using just the x axis for these likely causes some weird movement bugs in certain cases like getting stopped when strafing while facing either direction of the y axis 
-                if (Math.signum(c.getVelocity().x) != Math.signum(c.getAcceleration().x) && !c.getVelocity().equals(new Point3D())) {
-                    // System.out.println("decelerating");
-                    isDecelerating = true;
-                }
-
-                c.updateVelocity(REFRESH_RATE);
-
-                if (isDecelerating && !c.getVelocity().equals(new Point3D()) && Math.signum(c.getVelocity().x) == Math.signum(c.getAcceleration().x)) {
-                    // System.out.println("stopping");
-                    c.setVelocity(new Point3D());
-                    c.setAcceleration(new Point3D());
-                }
-
-                c.updatePosition(REFRESH_RATE);
+    private void updateTimeStepPositions() {
+        for (TimeStepCamera c : timeStepCameras) {
+                c.timeStepUpdate(REFRESH_RATE);
         }
     }
 
     public void refreshCameras() {
         for (Camera c : cameras) {
-            if (c.isShowing()) {
+            if (c.getViewPanel().isShowing()) {
                 c.refresh();
             }
         }
@@ -153,7 +125,7 @@ public class Space implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        updateCameraPositions();
+        updateTimeStepPositions();
         refreshCameras();
     }
 

@@ -39,7 +39,7 @@ public class ReworkTest {
 
         // create camera
         Camera camera = space.createCamera();
-        frame.add(camera);
+        frame.add(camera.getViewPanel());
         frame.setVisible(true);
         camera.refresh();
 

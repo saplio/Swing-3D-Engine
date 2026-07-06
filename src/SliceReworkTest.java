@@ -32,7 +32,7 @@ public class SliceReworkTest {
 
         // add camera to container
         Camera camera = space.createCamera();
-        frame.add(camera);
+        frame.add(camera.getViewPanel());
         frame.setVisible(true);
         camera.refresh();
 

@@ -251,31 +251,27 @@ public class PerspectiveMath {
         return new Point(x, y);
     }
 
-
-    // TODO: replace with Point3D
     /**
      * Convert camera relative position information to orthogonal position information. Currently Only does this along XY plane.
      * 
-     * @param amtRight Camera relative rightward movement
-     * @param amtForward Camera relative forward movement
-     * @param amtUp Camera relative upward movement
+     * @param coords Camera relative movement
      * @param yaw Camera XY plane orientation
      * @return New {@code Point3D} representing the orthogonal version of the movement
      */
-    public static Point3D cameraRelativeToOrthogonalXY(double amtRight, double amtForward, double amtUp, double yaw) {
+    public static Point3D cameraRelativeToOrthogonalXY(Point3D coords, double yaw) {
         // TODO: make this a more general method that can account for all rotation
 
-        double x = amtForward * Math.sin(-yaw) + amtRight * Math.sin(-yaw + Math.PI / 2);
-		double y = amtForward * Math.cos(-yaw) + amtRight * Math.cos(-yaw +  Math.PI / 2);
-        return new Point3D(x, y, amtUp);
+        double x = coords.y * Math.sin(-yaw) + coords.x * Math.sin(-yaw + Math.PI / 2);
+		double y = coords.y * Math.cos(-yaw) + coords.x * Math.cos(-yaw +  Math.PI / 2);
+        return new Point3D(x, y, coords.z);
     }
 
-    public static Point3D orthogonalToCameraRelativeXY(double x, double y, double z, double yaw) {
+    public static Point3D orthogonalToCameraRelativeXY(Point3D coords, double yaw) {
         // TODO: make this a more general method that can account for all rotation
 
-        double amtRight = y * Math.sin(yaw) + x * Math.sin(yaw + Math.PI / 2);
-		double amtForward = y * Math.cos(yaw) + x * Math.cos(yaw +  Math.PI / 2);
-        return new Point3D(amtRight, amtForward, z);
+        double amtRight = coords.y * Math.sin(yaw) + coords.x * Math.sin(yaw + Math.PI / 2);
+		double amtForward = coords.y * Math.cos(yaw) + coords.x * Math.cos(yaw +  Math.PI / 2);
+        return new Point3D(amtRight, amtForward, coords.z);
     }
 
     // The following are perspective calculation equations which produce warped perspective.

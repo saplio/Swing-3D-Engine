@@ -1,5 +1,4 @@
 import java.awt.Point;
-import java.io.File;
 
 import javax.swing.JFrame;
 
@@ -21,7 +20,7 @@ public class Main {
 		
 		// create two cameras in the same space
 		createDisplay(space, new Point(100, 200));
-        createDisplay(space, new Point(700, 200));
+        // createDisplay(space, new Point(700, 200));
 	}
 
 	public static void createDisplay(Space space, Point pos) {
@@ -33,8 +32,8 @@ public class Main {
         frame.setLocation(pos);
 
         // add camera to container
-        SmoothMovementCamera camera = space.createSmoothMovementCamera();
-        frame.add(camera);
+        TimeStepCamera camera = space.createTimeStepCamera();
+        frame.add(camera.getViewPanel());
         frame.setVisible(true);
         camera.moveTo(0, 0, 2);
 
