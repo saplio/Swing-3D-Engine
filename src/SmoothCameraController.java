@@ -1,23 +1,51 @@
+import java.awt.AWTException;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
 
-public class SmoothCameraController extends KeyAdapter {
+public class SmoothCameraController extends KeyAdapter implements MouseMotionListener, MouseListener {
 
     public static final double RIGHT_PLACEMENT = 0;
 	public static final double FORWARD_PLACEMENT = 3;
 	public static final double UP_PLACEMENT = 0;
 
-	public static final double DEFAULT_ACCELERATION = 20;
+	public static final double DEFAULT_ACCELERATION = 35;
 
+	public static final double DEFAULT_SENSITIVITY = 0.002;
+	
     private TimeStepCamera camera;
-	private double acceleration;
 
-	// TODO: use Key Bindings instead of a KeyAdapter
+	private double acceleration;
+	private double sensitivity;
+
+	private boolean mouseMotion;
+
+	private final Cursor BLANK_CURSOR;
+
+// TODO: use Key Bindings instead of a KeyAdapter
 
     public SmoothCameraController(TimeStepCamera c) {
         camera = c;
 
 		acceleration = DEFAULT_ACCELERATION;
+		sensitivity = DEFAULT_SENSITIVITY;
+
+		mouseMotion = true;
+
+		// TODO: add link to where code was obtained
+		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+		BLANK_CURSOR = Toolkit.getDefaultToolkit().createCustomCursor(
+    	cursorImg, new Point(0, 0), "blank cursor");
+
+		camera.getViewPanel().setCursor(BLANK_CURSOR);
     }
 
 	public double getAcceleration() {
@@ -26,6 +54,14 @@ public class SmoothCameraController extends KeyAdapter {
 
 	public void setAcceleration(double a) {
 		acceleration = a;
+	}
+
+	public double getSensitivity() {
+		return sensitivity;
+	}
+
+	public void setSensitivity(double s) {
+		sensitivity = s;
 	}
 
     // perform an action with the camera depending on the key pressed
@@ -108,10 +144,73 @@ public class SmoothCameraController extends KeyAdapter {
 		else if (e.getKeyChar() == 'j') {
 			camera.setFovFactor(camera.getFovFactor() - 10);
 		}
+
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			mouseMotion = !mouseMotion;
+			if (mouseMotion) {
+				camera.getViewPanel().setCursor(BLANK_CURSOR);
+			}
+			else {
+				camera.getViewPanel().setCursor(Cursor.getDefaultCursor());
+			}
+		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		camera.setBeingMoved(false);
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// FIXME: mouse can escape windowed mode if moved fast enough
+		if (!mouseMotion || !e.getComponent().isFocusOwner()) {
+			return;
+		}
+
+		Point viewLocation = e.getComponent().getLocationOnScreen();
+		Dimension viewSize = e.getComponent().getSize();
+		Point absoluteCenter = new Point((viewLocation.x + viewSize.width / 2), (viewLocation.y + viewSize.height / 2));
+		Point relativeCenter = new Point(viewSize.width / 2, viewSize.height / 2);
+		Point movement = new Point(e.getX() - relativeCenter.x, e.getY() - relativeCenter.y);
+
+		camera.rotate(-movement.x * sensitivity,-movement.y * sensitivity, 0);
+
+		try {
+			new Robot().mouseMove(absoluteCenter.x, absoluteCenter.y);;
+		}
+		catch(AWTException ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// empty method to satisfy interface
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// empty method to satisfy interface
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// empty method to satisfy interface
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// empty method to satisfy interface
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// empty method to satisfy interface
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// empty method to satisfy interface
 	}
 }

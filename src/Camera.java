@@ -274,23 +274,6 @@ public class Camera {
         return shape;
     }
 
-    // @Override
-    // protected void paintComponent(Graphics g) {
-    //     super.paintComponent(g);
-
-    //     Graphics2D g2D = (Graphics2D)(g.create());
-
-    //     for (ScreenPolygon shape : new ArrayList<ScreenPolygon>(shapes)) {
-    //         g2D.setColor(shape.color);
-    //         g2D.fill(shape);
-
-    //         g2D.setColor(Color.BLACK);
-    //         g2D.draw(shape);
-    //     }
-        
-    //     g2D.dispose();
-    // }
-
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Camera)) {

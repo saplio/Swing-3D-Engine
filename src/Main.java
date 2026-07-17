@@ -3,7 +3,7 @@ import java.awt.Point;
 import javax.swing.JFrame;
 
 /**
- * Class with the main method that creates a frame, a space, cameras, and a keyboard listener
+ * Class with the main method that creates a space, cameras, and a keyboard listener
  */
 
 public class Main {
@@ -20,7 +20,7 @@ public class Main {
 		
 		// create two cameras in the same space
 		createDisplay(space, new Point(100, 200));
-        // createDisplay(space, new Point(700, 200));
+        createDisplay(space, new Point(700, 200));
 	}
 
 	public static void createDisplay(Space space, Point pos) {
@@ -38,6 +38,8 @@ public class Main {
         camera.moveTo(0, 0, 2);
 
         // add keyboard control
-        frame.addKeyListener(new SmoothCameraController(camera));
+        SmoothCameraController controller = new SmoothCameraController(camera);
+        frame.addKeyListener(controller);
+        frame.addMouseMotionListener(controller);
     }
 }

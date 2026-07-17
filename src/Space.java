@@ -19,7 +19,7 @@ public class Space implements ActionListener {
 
     private ArrayList<Model> models; // stores all Model objects
     private ArrayList<Camera> cameras; // stores all Camera objects
-    private ArrayList<TimeStepCamera> timeStepCameras; // stores specifically references to SmoothMovementCamera objects
+    private ArrayList<TimeStepCamera> timeStepCameras; // stores specifically references to TimeStepCamera objects
 
     private Timer timer;
 

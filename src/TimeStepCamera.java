@@ -5,7 +5,7 @@
 public class TimeStepCamera extends Camera implements TimeStepActor {
 
     public static final double DEFAULT_DECELERATION = 8;
-    public static final double DEFAULT_TOP_SPEED = 15;
+    public static final double DEFAULT_TOP_SPEED = 25;
 
     private Point3D velocity;
     private Point3D acceleration;
@@ -70,8 +70,12 @@ public class TimeStepCamera extends Camera implements TimeStepActor {
     // TODO: make it so acceleration and deceleration is independent on each axis
     @Override
     public void timeStepUpdate(double timeUnit) {
-        if (beingMoved == false && !velocity.equals(new Point3D())) {
+        
+        if (beingMoved == false && !(velocity.getHypot() == 0)) {
+            // TODO: guard against epsilon (really small velocity numbers)
+            // TODO: velocity.normalize.negative.scale to avoid division errors
             acceleration = velocity.negative().scale(deceleration / velocity.getHypot());
+
             if (acceleration.scale(timeUnit).getHypot() >= velocity.getHypot()) {
                 acceleration = new Point3D();
                 velocity = new Point3D();
