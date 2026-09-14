@@ -44,6 +44,6 @@ public class ReworkTest {
         camera.refresh();
 
         // add keyboard control
-        frame.addKeyListener(new BasicCameraController(camera));
+        frame.addKeyListener(new BasicCameraKeyAdapter(camera));
     }
 }

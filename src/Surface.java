@@ -32,6 +32,16 @@ public class Surface {
 		this.points = new ArrayList<Point3D>(points);
 		color = c;
 	}
+
+	public Surface(Surface otherSurface) {
+		points = new ArrayList<Point3D>();
+
+		for (Point3D point : otherSurface.getPoints()) {
+			points.add(new Point3D(point));
+		}
+
+		color = otherSurface.getColor();
+	}
 	
 	public List<Point3D> getPoints() {
 		return Collections.unmodifiableList(points);

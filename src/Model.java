@@ -26,6 +26,16 @@ public class Model {
 		this.surfaces = new ArrayList<Surface>(surfaces);
 		location = new Point3D(surfaces.getFirst().getLocationPoint3D());
 	}
+
+	public Model(Model otherModel) {
+		surfaces = new ArrayList<Surface>();
+
+		for (Surface surface : otherModel.getSurfaces()) {
+			surfaces.add(new Surface(surface));
+		}
+
+		location = new Point3D(otherModel.getLocation());
+	}
     	
 	public List<Surface> getSurfaces() {
 		return Collections.unmodifiableList(surfaces);

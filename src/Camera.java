@@ -18,6 +18,8 @@ public class Camera {
     // TODO: maybe rewrite this and the model class to extend an abstract class called "Moveable" to organize code better
 
     public static final double DEFAULT_FOV_FACTOR = 400;
+    
+    private static final Model CAMERA_MODEL = ModelReader.readModel("camera");
 
     private Point3D location;
 
@@ -51,6 +53,7 @@ public class Camera {
 
                 Graphics2D g2D = (Graphics2D)(g.create());
 
+                // Here is where shape information is used to draw on the screen
                 for (ScreenPolygon shape : new ArrayList<ScreenPolygon>(shapes)) {
                     g2D.setColor(shape.color);
                     g2D.fill(shape);
@@ -236,7 +239,7 @@ public class Camera {
 
         for (Camera c : space.getCameras()) {
             if (!c.equals(this)) {
-                Model cameraCube = ModelReader.readModel("camera");
+                Model cameraCube = new Model(CAMERA_MODEL);
                 cameraCube.rotateLikeCameraBy(c.getYaw(), c.getPitch(), c.getRoll());
                 Point3D cameraPoint = c.getCameraLocation();
                 cameraCube.moveTo(cameraPoint.x, cameraPoint.y, cameraPoint.z);

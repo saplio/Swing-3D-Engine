@@ -17,7 +17,7 @@ public class Main {
 		Model octagons = ModelReader.readModel("octagon grid");
 		octagons.moveBy(-8.75, 2, 0);
 		space.addModel(octagons);
-		
+
 		// create two cameras in the same space
 		createDisplay(space, new Point(100, 200));
         createDisplay(space, new Point(700, 200));
@@ -38,8 +38,6 @@ public class Main {
         camera.moveTo(0, 0, 2);
 
         // add keyboard control
-        SmoothCameraController controller = new SmoothCameraController(camera);
-        frame.addKeyListener(controller);
-        frame.addMouseMotionListener(controller);
+        TimeStepCameraController controller = new TimeStepCameraController(camera);
     }
 }

@@ -7,19 +7,24 @@ import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import javax.swing.event.MouseInputListener;
 import java.awt.image.BufferedImage;
 
-public class SmoothCameraController extends KeyAdapter implements MouseMotionListener, MouseListener {
+/**
+ * Class that extends the built in KeyAdapter class and implements MouseInputListener
+ * in order to detect keyboard and mouse input in the program frame.
+ */
+
+public class SmoothCameraKeyAdapter extends KeyAdapter implements MouseInputListener {
 
     public static final double RIGHT_PLACEMENT = 0;
 	public static final double FORWARD_PLACEMENT = 3;
 	public static final double UP_PLACEMENT = 0;
 
 	public static final double DEFAULT_ACCELERATION = 35;
-
 	public static final double DEFAULT_SENSITIVITY = 0.002;
+
+	private final Cursor BLANK_CURSOR;
 	
     private TimeStepCamera camera;
 
@@ -28,11 +33,9 @@ public class SmoothCameraController extends KeyAdapter implements MouseMotionLis
 
 	private boolean mouseMotion;
 
-	private final Cursor BLANK_CURSOR;
+	// FIXME: rework to use Key Bindings instead of a KeyAdapter
 
-// TODO: use Key Bindings instead of a KeyAdapter
-
-    public SmoothCameraController(TimeStepCamera c) {
+    public SmoothCameraKeyAdapter(TimeStepCamera c) {
         camera = c;
 
 		acceleration = DEFAULT_ACCELERATION;
@@ -40,10 +43,9 @@ public class SmoothCameraController extends KeyAdapter implements MouseMotionLis
 
 		mouseMotion = true;
 
-		// TODO: add link to where code was obtained
+		// these two lines of code from https://stackoverflow.com/questions/1984071/how-to-hide-cursor-in-a-swing-application
 		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
-		BLANK_CURSOR = Toolkit.getDefaultToolkit().createCustomCursor(
-    	cursorImg, new Point(0, 0), "blank cursor");
+		BLANK_CURSOR = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
 
 		camera.getViewPanel().setCursor(BLANK_CURSOR);
     }

@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
  * Class that extends the built in KeyAdapter class in order to detect keyboard input in the program frame
  */
 
-public class BasicCameraController extends KeyAdapter {
+public class BasicCameraKeyAdapter extends KeyAdapter {
 
 	public static final double RIGHT_PLACEMENT = 0;
 	public static final double FORWARD_PLACEMENT = 3;
@@ -16,7 +16,7 @@ public class BasicCameraController extends KeyAdapter {
 	private Camera camera;
 	private double stepSize;
 	
-	public BasicCameraController(Camera c) {
+	public BasicCameraKeyAdapter(Camera c) {
 		camera = c;
 		stepSize = DEFAULT_STEP_SIZE;
 	}
