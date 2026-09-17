@@ -3,7 +3,7 @@ import java.awt.Point;
 import javax.swing.JFrame;
 
 /**
- * Class with the main method that creates a space, cameras, and a keyboard listener
+ * Class with the main method that creates a space, cameras, and a controller for the cameras
  */
 
 public class Main {

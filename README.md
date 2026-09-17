@@ -12,9 +12,9 @@ The main java file automatically loads two camera perspectives in different wind
 
 The project does not currently have the ability to control the overlapping of surfaces, which simply overlap according to the later placed surface being painted on top.
 
-### Model Adder
+### Adding Custom Models
 
-The model adding system reads from directories in the src/resources/models folder. To make a new model in this folder, you must create a new directory with the desired name for the model, and within it create a text file with the .main file extension. In this file you must define the color and vertices of each surface of the model like so, leaving a blank line between each block of surface values:
+The model reading system reads from directories in the src/resources/models folder. To make a new model in this folder, you must create a new directory with the desired name for the model, and within it create a text file with the .main file extension. In this file you must define the color and vertices of each surface of the model like so, leaving a blank line between each block of surface values:
 ```
 [red] [green] [blue] [alpha]* // specify rgba value of surface color using integers from 0 - 255 *alpha optional
 [x] [y] [z] // specify relative coordinates of first vertex using floats
@@ -28,7 +28,7 @@ You can also include other model files in a .main file using semicolons. These f
 ```
 Secondary .txt model files can include other model files as well! However, a model file including a file that is already part of the nest will make an error model instead.
 
-The model adder will treat any non numeric characters the same as spaces (unless they are used to include a file or make a number negative or a decimal). Some example files are already provided in the models folder.
+The model reader will treat any non numeric characters the same as spaces (unless they are used to include a file or make a number negative or a decimal). Some example files are already provided in the models folder.
 
 ### Controls
 
