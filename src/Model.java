@@ -19,12 +19,22 @@ public class Model {
     public Model(Surface surface) {
         surfaces = new ArrayList<Surface>();
         surfaces.add(surface);
-		location = new Point3D();
+		location = new Point3D(surface.getLocationPoint3D());
     }
 
 	public Model(List<Surface> surfaces) {
 		this.surfaces = new ArrayList<Surface>(surfaces);
-		location = new Point3D();
+		location = new Point3D(surfaces.getFirst().getLocationPoint3D());
+	}
+
+	public Model(Model otherModel) {
+		surfaces = new ArrayList<Surface>();
+
+		for (Surface surface : otherModel.getSurfaces()) {
+			surfaces.add(new Surface(surface));
+		}
+
+		location = new Point3D(otherModel.getLocation());
 	}
     	
 	public List<Surface> getSurfaces() {
@@ -54,6 +64,10 @@ public class Model {
 
 	public Point3D getLocation() {
 		return new Point3D(location);
+	}
+
+	public void setLocation(Point3D p) {
+		location = new Point3D(p);
 	}
 
 	public void moveTo(double x, double y, double z) {

@@ -8,6 +8,9 @@ import java.util.List;
 
 public class PerspectiveMath {
 
+    private PerspectiveMath() {
+    }
+
     /**
      * Rotate a {@code Surface} on the XY plane.
      * 
@@ -239,30 +242,36 @@ public class PerspectiveMath {
      * @param point Point in space to perform projection on
      * @param cameraPoint Point where center of projection screen is located in space
      * @param viewDimension Dimensions of the projection screen
-     * @param fov Field of view
+     * @param fovFactor Field of view factor
      * @return {@code Point} that represents the position where the {@code Point3D} should be displayed on the projection screen
      */
-    public static Point calcPointPerspective(Point3D point, Point3D cameraPoint, Dimension viewDimension, double fov) {
-        int x = (viewDimension.width / 2) + (int)(fov * (point.x - cameraPoint.x)/(point.y - cameraPoint.y));
-        int y = (viewDimension.height / 2) - (int)(fov * (point.z - cameraPoint.z)/(point.y - cameraPoint.y));
+    public static Point calcPointPerspective(Point3D point, Point3D cameraPoint, Dimension viewDimension, double fovFactor) {
+        int x = (viewDimension.width / 2) + (int)(fovFactor * (point.x - cameraPoint.x)/(point.y - cameraPoint.y));
+        int y = (viewDimension.height / 2) - (int)(fovFactor * (point.z - cameraPoint.z)/(point.y - cameraPoint.y));
         return new Point(x, y);
     }
 
     /**
      * Convert camera relative position information to orthogonal position information. Currently Only does this along XY plane.
      * 
-     * @param amtRight Camera relative rightward movement
-     * @param amtForward Camera relative forward movement
-     * @param amtUp Camera relative upward movement
+     * @param coords Camera relative movement
      * @param yaw Camera XY plane orientation
      * @return New {@code Point3D} representing the orthogonal version of the movement
      */
-    public static Point3D cameraRelativeToOrthogonalXY(double amtRight, double amtForward, double amtUp, double yaw) {
+    public static Point3D cameraRelativeToOrthogonalXY(Point3D coords, double yaw) {
         // TODO: make this a more general method that can account for all rotation
 
-        double x = amtForward * Math.sin(-yaw) + amtRight * Math.sin(-yaw + Math.PI / 2);
-		double y = amtForward * Math.cos(-yaw) + amtRight * Math.cos(-yaw +  Math.PI / 2);
-        return new Point3D(x, y, amtUp);
+        double x = coords.y * Math.sin(-yaw) + coords.x * Math.sin(-yaw + Math.PI / 2);
+		double y = coords.y * Math.cos(-yaw) + coords.x * Math.cos(-yaw +  Math.PI / 2);
+        return new Point3D(x, y, coords.z);
+    }
+
+    public static Point3D orthogonalToCameraRelativeXY(Point3D coords, double yaw) {
+        // TODO: make this a more general method that can account for all rotation
+
+        double amtRight = coords.y * Math.sin(yaw) + coords.x * Math.sin(yaw + Math.PI / 2);
+		double amtForward = coords.y * Math.cos(yaw) + coords.x * Math.cos(yaw +  Math.PI / 2);
+        return new Point3D(amtRight, amtForward, coords.z);
     }
 
     // The following are perspective calculation equations which produce warped perspective.
@@ -273,12 +282,12 @@ public class PerspectiveMath {
      * @param point Point in space to perform projection on
      * @param cameraPoint Point where center of projection screen is located in space
      * @param viewDimension Dimensions of the projection screen
-     * @param fov Field of view
+     * @param fovFactor Field of view factor
      * @return {@code Point} that represents the position where the {@code Point3D} should be displayed on the projection screen
      */
-    public static Point calcPointPerspectivePincushion(Point3D point, Point3D cameraPoint, Dimension viewDimension, double fov) {
-        int x = (viewDimension.width / 2) + (int)(fov * Math.atan((point.x - cameraPoint.x)/(point.y - cameraPoint.y)));
-        int y = (viewDimension.height / 2) - (int)(fov * Math.atan((point.z - cameraPoint.z)/(point.y - cameraPoint.y)));
+    public static Point calcPointPerspectivePincushion(Point3D point, Point3D cameraPoint, Dimension viewDimension, double fovFactor) {
+        int x = (viewDimension.width / 2) + (int)(fovFactor * Math.atan((point.x - cameraPoint.x)/(point.y - cameraPoint.y)));
+        int y = (viewDimension.height / 2) - (int)(fovFactor * Math.atan((point.z - cameraPoint.z)/(point.y - cameraPoint.y)));
         return new Point(x, y);
     }
 
@@ -288,10 +297,10 @@ public class PerspectiveMath {
      * @param point Point in space to perform projection on
      * @param cameraPoint Point where center of projection screen is located in space
      * @param viewDimension Dimensions of the projection screen
-     * @param fov Field of view
+     * @param fovFactor Field of view factor
      * @return {@code Point} that represents the position where the {@code Point3D} should be displayed on the projection screen
      */
-    public static Point calcPointPerspectiveFisheye(Point3D point, Point3D cameraPoint, Dimension viewDimension, double fov) {
+    public static Point calcPointPerspectiveFisheye(Point3D point, Point3D cameraPoint, Dimension viewDimension, double fovFactor) {
         double theta = Math.atan((point.z - cameraPoint.z) / (point.x - cameraPoint.x));
 		
 		if ((point.x - cameraPoint.x < 0) && (point.z - cameraPoint.z >= 0)) {
@@ -304,7 +313,7 @@ public class PerspectiveMath {
 			theta += Math.PI * 2;
 		}
 		
-		double r = (fov * (Math.atan(Math.hypot((point.x - cameraPoint.x), (point.z - cameraPoint.z)) / (point.y - cameraPoint.y)) / (Math.PI * 0.45)));
+		double r = (fovFactor * (Math.atan(Math.hypot((point.x - cameraPoint.x), (point.z - cameraPoint.z)) / (point.y - cameraPoint.y)) / (Math.PI * 0.45)));
 		
 		int x = (int)((viewDimension.width / 2) + (r * Math.cos(theta)));	
         int y = (int)((viewDimension.height / 2) - (r * Math.sin(theta)));

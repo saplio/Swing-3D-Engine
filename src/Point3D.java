@@ -36,6 +36,10 @@ public class Point3D {
         return z;
     }
 
+    public double getHypot() {
+        return Math.hypot(Math.hypot(x, y), z);
+    }
+
     public void moveTo(double x, double y, double z) {
         this.x = x;
         this.y = y;
@@ -58,6 +62,10 @@ public class Point3D {
 
     public Point3D scale(double scaleFactor) {
         return new Point3D(x * scaleFactor, y * scaleFactor, z * scaleFactor);
+    }
+
+    public Point3D negative() {
+        return new Point3D(-x, -y, -z);
     }
 
     @Override
