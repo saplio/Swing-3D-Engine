@@ -111,8 +111,6 @@ public class Camera {
 
     public void setFovFactor(double fovFactor) {
         this.fovFactor = fovFactor;
-
-        refresh();
     }
 
     /**
@@ -124,8 +122,6 @@ public class Camera {
      */
     public void moveTo(double x, double y, double z) {
         location = new Point3D(x, y, z);
-
-        refresh();
     }
 
     /**
@@ -135,8 +131,6 @@ public class Camera {
      */
     public void moveTo(Point3D newLocation) {
         location = new Point3D(newLocation);
-
-        refresh();
     }
 
     /**
@@ -148,8 +142,6 @@ public class Camera {
      */
     public void moveOrthogonal(double x, double y, double z) {
         location = location.sum(new Point3D(x, y, z));
-
-        //  refresh();
     }
 
     /**
@@ -159,8 +151,6 @@ public class Camera {
      */
     public void moveOrthogonal(Point3D movement) {
         location = location.sum(movement);
-
-         refresh();
     }
 
     /**
@@ -173,8 +163,6 @@ public class Camera {
     public void moveCameraRelativeXY(double amtRight, double amtForward, double amtUp) {
         Point3D movement = PerspectiveMath.cameraRelativeToOrthogonalXY(new Point3D(amtRight, amtForward, amtUp), yaw);
         location = location.sum(movement);
-
-        refresh();
     }
 
     /**
@@ -185,8 +173,6 @@ public class Camera {
     public void moveCameraRelativeXY(Point3D relativeMovement) {
         Point3D movement = PerspectiveMath.cameraRelativeToOrthogonalXY(relativeMovement, yaw);
         location = location.sum(movement);
-
-        refresh();
     }
 
     // TODO: make a method that moves the camera fully camera relative
@@ -204,8 +190,6 @@ public class Camera {
         this.yaw = yaw;
         this.pitch = pitch;
         this.roll = roll;
-
-        refresh();
     }
 
     /**
@@ -219,8 +203,6 @@ public class Camera {
         this.yaw += yaw;
         this.pitch += pitch;
         this.roll += roll;
-
-        // refresh();
     }
     
     /**
