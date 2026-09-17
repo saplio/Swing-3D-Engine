@@ -33,33 +33,21 @@ The model adder will treat any non numeric characters the same as spaces (unless
 ### Controls
 
 Movement:
-- W: move forward 0.35 units
-- A: move left 0.35 units
-- S: move backward 0.35 units
-- D: move right 0.35 units
-- Space: move up 0.35 units
-- Z: move down 0.35 units
-- L: move left 5 units
-- R: move right 5 units
+- W: move forward
+- A: move left
+- S: move backward
+- D: move right
+- Space: move up
+- Z: move down
 
-Rotation:
-- Q: turn left 1/64th of a full rotation
-- E: turn right 1/64th of a full rotation
-- T: tilt up 1/64th of a full rotation
-- G: tilt down 1/64th of a full rotation
-- X: roll left 1/64th of a full rotation
-- C: roll right 1/64th of a full rotation
-
-Misc:
-- H: decrease field of view
-- J: increase field of view
+Other:
+- Mouse movement: rotate the camera
+- Esc: toggle mouse movement for camera rotation
 - N: begin the prompt to add a model from the models folder to the environment
-- I: print camera info to the console
-- M: scale the most recently placed model by 1.1x its size (temporary testing feature)
 
 ## Plans for this project
 
-I originally started this project at the beginning of college in the spring of 2025 when first learning the Java language. There are many misuses of Swing and design choices that make the program much more disorganized and harder to develop than it needs to be. 
+I originally started this project at the beginning of college in the spring of 2025 when first learning the Java language. There were many misuses of Swing and design choices that made the program much more disorganized and harder to develop than it needed to be. 
 
 I want to clean up this project to make it easier to understand and develop, and rewrite it to use Swing properly and more efficiently. (complete!)
 
@@ -68,6 +56,6 @@ I also want to attempt to add the following features:
 - The ability to manipulate surfaces/models in an environment during runtime
 - Provide more customization for model files and update model reader (done!)
 - Add additional UI to the camera such as coordinate information
-- Create smoother camera movement
+- Create smoother camera movement (done!)
 - Some form of overlap control, even if not fully accurate
 - Ability to save 3D environments and reload them when running a separate instance of the program

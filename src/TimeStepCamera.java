@@ -16,7 +16,11 @@ public class TimeStepCamera extends Camera implements TimeStepActor {
     private boolean beingMoved;
 
     public TimeStepCamera(Space space) {
-        super(space);
+        this(space, new Point3D());
+    }
+
+    public TimeStepCamera(Space space, Point3D location) {
+        super(space, location);
         
         velocity = new Point3D();
         acceleration = new Point3D();
@@ -67,13 +71,10 @@ public class TimeStepCamera extends Camera implements TimeStepActor {
         topSpeed = speed;
     }
 
-    // TODO: make it so acceleration and deceleration is independent on each axis
     @Override
     public void timeStepUpdate(double timeUnit) {
         
         if (beingMoved == false && !(velocity.getHypot() == 0)) {
-            // TODO: guard against epsilon (really small velocity numbers)
-            // TODO: velocity.normalize.negative.scale to avoid division errors
             acceleration = velocity.negative().scale(deceleration / velocity.getHypot());
 
             if (acceleration.scale(timeUnit).getHypot() >= velocity.getHypot()) {

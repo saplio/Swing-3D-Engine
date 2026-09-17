@@ -19,14 +19,14 @@ public class Space implements ActionListener {
 
     private ArrayList<Model> models; // stores all Model objects
     private ArrayList<Camera> cameras; // stores all Camera objects
-    private ArrayList<TimeStepCamera> timeStepCameras; // stores specifically references to TimeStepCamera objects
+    private ArrayList<TimeStepActor> timeStepActors; // stores all TimeStepActor objects
 
     private Timer timer;
 
     public Space() {
         models = new ArrayList<Model>();
         cameras = new ArrayList<Camera>();
-        timeStepCameras = new ArrayList<TimeStepCamera>();
+        timeStepActors = new ArrayList<TimeStepActor>();
 
         timer = new Timer((int)(REFRESH_RATE * 1000), this);
     }
@@ -47,8 +47,8 @@ public class Space implements ActionListener {
         return Collections.unmodifiableList(cameras);
     }
 
-    public List<TimeStepCamera> getTimeStepCameras() {
-        return Collections.unmodifiableList(timeStepCameras);
+    public List<TimeStepActor> getTimeStepActors() {
+        return Collections.unmodifiableList(timeStepActors);
     }
 
     public boolean addModel(Model model) {
@@ -57,6 +57,10 @@ public class Space implements ActionListener {
         }
 
         models.add(model);
+
+        if (model instanceof TimeStepActor m) {
+            timeStepActors.add(m);
+        }
 
         return true;
     }
@@ -89,6 +93,18 @@ public class Space implements ActionListener {
     }
 
     /**
+     * Create a new {@code Camera} object in this {@code Space}. 
+     * 
+     * @param location initial position of {@code Camera}
+     * @return {@code Camera} initialized at the origin facing the positive Y axis
+     */
+    public Camera createCamera(Point3D location) {
+        Camera camera = new Camera(this, location);
+        cameras.add(camera);
+        return camera;
+    }
+
+    /**
      * Create a new {@code TimeStepCamera} object in this {@code Space}. 
      * 
      * @return {@code TimeStepCamera} initialized at the origin facing the positive Y axis
@@ -96,13 +112,26 @@ public class Space implements ActionListener {
     public TimeStepCamera createTimeStepCamera() {
         TimeStepCamera camera = new TimeStepCamera(this);
         cameras.add(camera);
-        timeStepCameras.add(camera);
+        timeStepActors.add(camera);
+        return camera;
+    }
+
+    /**
+     * Create a new {@code TimeStepCamera} object in this {@code Space}. 
+     * 
+     * @param location initial position of {@code TimeStepCamera}
+     * @return {@code TimeStepCamera} initialized at the origin facing the positive Y axis
+     */
+    public TimeStepCamera createTimeStepCamera(Point3D location) {
+        TimeStepCamera camera = new TimeStepCamera(this, location);
+        cameras.add(camera);
+        timeStepActors.add(camera);
         return camera;
     }
 
     private void updateTimeStepPositions() {
-        for (TimeStepCamera c : timeStepCameras) {
-                c.timeStepUpdate(REFRESH_RATE);
+        for (TimeStepActor a : timeStepActors) {
+                a.timeStepUpdate(REFRESH_RATE);
         }
     }
 
@@ -112,15 +141,6 @@ public class Space implements ActionListener {
                 c.refresh();
             }
         }
-    }
-
-    // FIXME: temporary methods for testing
-    public void moveLastModel() {
-        models.getLast().moveBy(0, 1, 0);
-    }
-
-    public void scaleLastModel() {
-        models.getLast().scale(1.1);
     }
 
     @Override

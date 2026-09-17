@@ -19,27 +19,27 @@ import javax.swing.event.MouseInputListener;
 
 public class TimeStepCameraController implements MouseInputListener {
 
-    public static final double DEFAULT_ACCELERATION = 35; // FIXME: add ability to change acceleration
+    public static final double DEFAULT_ACCELERATION = 35;
 	public static final double DEFAULT_SENSITIVITY = 0.002;
+
+    private double acceleration;
+    private double sensitivity;
 
     private TimeStepCamera camera;
     private LinkedList<String> movementKeysPressed;
-    private double sensitivity;
     private boolean mouseMotionOn;
 
+    // TODO: implement external changing of keybinds
+
     public TimeStepCameraController(TimeStepCamera camera) {
+        acceleration = DEFAULT_ACCELERATION;
         sensitivity = DEFAULT_SENSITIVITY;
         mouseMotionOn = true;
 
         movementKeysPressed = new LinkedList<String>();
         this.camera = camera;
 
-        mapMovementAction("A", "move left", -35, 0,0);
-        mapMovementAction("D", "move right", 35, 0, 0);
-        mapMovementAction("W", "move forward", 0, 35, 0);
-        mapMovementAction("S", "move backward", 0, -35, 0);
-        mapMovementAction("SPACE", "move up", 0, 0, 35);
-        mapMovementAction("Z", "move down", 0, 0, -35);
+        mapAllMovementActions(acceleration);
 
         mapAction("ESCAPE", "toggle mouse motion", new ToggleMouseMotion());
         mapAction("N", "add model", new AddModel());
@@ -58,6 +58,15 @@ public class TimeStepCameraController implements MouseInputListener {
         mapAction("released " + key, "released " + action, new RemoveAcceleration(key, right, forward, up));
     }
 
+    private void mapAllMovementActions(double a) {
+        mapMovementAction("A", "move left", -a, 0,0);
+        mapMovementAction("D", "move right", a, 0, 0);
+        mapMovementAction("W", "move forward", 0, a, 0);
+        mapMovementAction("S", "move backward", 0, -a, 0);
+        mapMovementAction("SPACE", "move up", 0, 0, a);
+        mapMovementAction("Z", "move down", 0, 0, -a);
+    }
+
     private class AddAcceleration extends AbstractAction {
         private Point3D relativeAccel;
         private String key;
@@ -71,9 +80,10 @@ public class TimeStepCameraController implements MouseInputListener {
         public void actionPerformed(ActionEvent e) {
             if (movementKeysPressed.size() == 0) {
                 camera.setBeingMoved(true);
+                movementKeysPressed.add(key);
+                camera.setAcceleration(PerspectiveMath.cameraRelativeToOrthogonalXY(relativeAccel, camera.getYaw()));
             }
-
-            if (!movementKeysPressed.contains(key)) {
+            else if (!movementKeysPressed.contains(key)) {
                 movementKeysPressed.add(key);
                 camera.setAcceleration(camera.getAcceleration().sum(PerspectiveMath.cameraRelativeToOrthogonalXY(relativeAccel, camera.getYaw())));
             }
@@ -130,6 +140,16 @@ public class TimeStepCameraController implements MouseInputListener {
 		sensitivity = s;
 	}
 
+    public double getAcceleration() {
+        return acceleration;
+    }
+
+    // FIXME: ideally the AbstractAction classes directly read from acceleration rather than remapping the keybinds
+    public void setAcceleration(double a) {
+        acceleration = a;
+        mapAllMovementActions(a);
+    }
+
     @Override
 	public void mouseMoved(MouseEvent e) {
 		if (!mouseMotionOn || !SwingUtilities.getWindowAncestor(e.getComponent()).isFocusOwner()) {
@@ -138,12 +158,13 @@ public class TimeStepCameraController implements MouseInputListener {
 
 		Point viewLocation = e.getComponent().getLocationOnScreen();
 		Dimension viewSize = e.getComponent().getSize();
-		Point absoluteCenter = new Point((viewLocation.x + viewSize.width / 2), (viewLocation.y + viewSize.height / 2));
+
 		Point relativeCenter = new Point(viewSize.width / 2, viewSize.height / 2);
 		Point movement = new Point(e.getX() - relativeCenter.x, e.getY() - relativeCenter.y);
 
 		camera.rotate(-movement.x * sensitivity,-movement.y * sensitivity, 0);
 
+        Point absoluteCenter = new Point((viewLocation.x + viewSize.width / 2), (viewLocation.y + viewSize.height / 2));
 		try {
 			new Robot().mouseMove(absoluteCenter.x, absoluteCenter.y);
 		}

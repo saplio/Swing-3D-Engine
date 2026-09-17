@@ -149,7 +149,7 @@ public class Camera {
     public void moveOrthogonal(double x, double y, double z) {
         location = location.sum(new Point3D(x, y, z));
 
-         refresh();
+        //  refresh();
     }
 
     /**
@@ -220,7 +220,7 @@ public class Camera {
         this.pitch += pitch;
         this.roll += roll;
 
-        refresh();
+        // refresh();
     }
     
     /**
@@ -285,7 +285,7 @@ public class Camera {
 
         Camera other = (Camera)obj;
 
-        if (other.space.equals(space) && (other.fovFactor == fovFactor) && (other.location == location) &&
+        if (other.space.equals(space) && (other.fovFactor == fovFactor) && (other.location.equals(location)) &&
                 (other.yaw == yaw) && (other.pitch == pitch) && (other.roll == roll)) {
             return true;
         }
